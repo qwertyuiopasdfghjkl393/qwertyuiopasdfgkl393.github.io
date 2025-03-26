@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airtime Purchase</title>
+    <style>
+        :root {
+            --primary: #FF6B00;
+            --primary-hover: #E55F00;
+            --dark-bg: #121212;
+            --card-bg: #1E1E1E;
+            --input-bg: #2D2D2D;
+            --text-light: #FFFFFF;
+            --text-muted: #AAAAAA;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Light mode variables */
+        [data-theme="light"] {
+            --dark-bg: #f5f5f5;
+            --card-bg: #ffffff;
+            --input-bg: #f0f0f0;
+            --text-light: #333333;
+            --text-muted: #666666;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin: 20px auto;
+            transition: background-color 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="tel"],
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #444;
+            border-radius: var(--border-radius);
+            background: var(--input-bg);
+            color: var(--text-light);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] input[type="tel"],
+        [data-theme="light"] input[type="number"] {
+            border: 1px solid #ddd;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.2);
+        }
+
+        .providers-container {
+            margin: 25px 0;
+        }
+
+        .providers-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .providers-title h3 {
+            font-size: 18px;
+        }
+
+        .providers-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .provider-card {
+            background: var(--input-bg);
+            border-radius: 12px;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            min-height: 140px;
+        }
+
+        .provider-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .provider-card.selected {
+            border-color: var(--primary);
+            background: rgba(255, 107, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .provider-card img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .provider-card.selected img {
+            transform: scale(1.05);
+        }
+
+        .provider-card span {
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        [data-theme="light"] .switch-container {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .switch-container:last-child {
+            border-bottom: none;
+        }
+
+        .switch-label {
+            font-size: 15px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #444;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--box-shadow);
+            z-index: 100;
+        }
+
+        .theme-toggle i {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .first-time-notice {
+            background: rgba(255, 107, 0, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: var(--border-radius);
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+            
+            .providers-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .provider-card {
+                min-height: 120px;
+                padding: 15px 5px;
+            }
+            
+            .provider-card img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .provider-card img {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .provider-card span {
+                font-size: 13px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <h1>Buy Airtime</h1>
+            <p>Instant top-up for all networks</p>
+        </div>
+
+        <!-- First time user notice -->
+        <div class="first-time-notice" id="firstTimeNotice">
+            <i class="fas fa-info-circle"></i> First time users: Minimum deposit is ₦300
+        </div>
+
+        <div class="form-group">
+            <label for="phoneNumber">Phone Number</label>
+            <input type="tel" id="phoneNumber" placeholder="Enter phone number" required>
+        </div>
+
+        <div class="providers-container">
+            <div class="providers-title">
+                <h3>Select Network Provider</h3>
+            </div>
+            <div class="providers-grid">
+                <!-- All images should be placed in assets/images/providers/ folder -->
+                <div class="provider-card" onclick="selectProvider('Airtel', this)">
+                    <img src="assets/images/providers/airtel.png" alt="Airtel">
+                    <span>Airtel</span>
+                </div>
+                <div class="provider-card" onclick="selectProvider('MTN', this)">
+                    <img src="assets/images/providers/mtn.png" alt="MTN">
+                    <span>MTN</span>
+                </div>
+                <div class="provider-card" onclick="selectProvider('Glo', this)">
+                    <img src="assets/images/providers/glo.png" alt="Glo">
+                    <span>Glo</span>
+                </div>
+                <div class="provider-card" onclick="selectProvider('9mobile', this)">
+                    <img src="assets/images/providers/9mobile.png" alt="9mobile">
+                    <span>9mobile</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="amount">Amount (₦)</label>
+            <input type="number" id="amount" placeholder="Enter amount" min="50" required>
+        </div>
+
+        <div class="switch-container">
+            <span class="switch-label">Save as beneficiary</span>
+            <label class="switch">
+                <input type="checkbox" id="saveBeneficiary">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="switch-container">
+            <span class="switch-label">Schedule for later</span>
+            <label class="switch">
+                <input type="checkbox" id="scheduleBill">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <button class="btn" onclick="proceedToPayment()">Continue to Payment</button>
+    </div>
+
+    <script>
+        let selectedProvider = "";
+        let isFirstTimeUser = true; // This should be set based on actual user data in a real app
+
+        // Check if user is first-time (in a real app, this would come from backend/database)
+        function checkFirstTimeUser() {
+            // For demo purposes, we'll check localStorage
+            // In a real app, you would check with your backend
+            const hasTransactedBefore = localStorage.getItem('hasTransactedBefore');
+            isFirstTimeUser = !hasTransactedBefore;
+            
+            if (isFirstTimeUser) {
+                document.getElementById('amount').min = 300;
+                document.getElementById('firstTimeNotice').style.display = 'block';
+            } else {
+                document.getElementById('amount').min = 50;
+                document.getElementById('firstTimeNotice').style.display = 'none';
+            }
+        }
+
+        function selectProvider(provider, element) {
+            selectedProvider = provider;
+            document.querySelectorAll(".provider-card").forEach(card => {
+                card.classList.remove("selected");
+            });
+            element.classList.add("selected");
+        }
+
+        function proceedToPayment() {
+            const phone = document.getElementById("phoneNumber").value.trim();
+            const amount = parseFloat(document.getElementById("amount").value.trim());
+            const saveBeneficiary = document.getElementById("saveBeneficiary").checked;
+            const scheduleBill = document.getElementById("scheduleBill").checked;
+
+            // Validate inputs
+            if (!phone || phone.length < 11) {
+                alert("Please enter a valid 11-digit phone number");
+                return;
+            }
+
+            if (isNaN(amount)) {
+                alert("Please enter a valid amount");
+                return;
+            }
+
+            if (isFirstTimeUser && amount < 300) {
+                alert("First time users must deposit a minimum of ₦300");
+                return;
+            }
+
+            if (!isFirstTimeUser && amount < 50) {
+                alert("Minimum airtime purchase is ₦50");
+                return;
+            }
+
+            if (!selectedProvider) {
+                alert("Please select a network provider");
+                return;
+            }
+
+            // Prepare data object
+            const transactionData = {
+                phone,
+                amount,
+                provider: selectedProvider,
+                saveBeneficiary,
+                scheduleBill,
+                timestamp: new Date().toISOString()
+            };
+
+            // Store data in sessionStorage
+            sessionStorage.setItem("airtimeTransaction", JSON.stringify(transactionData));
+            
+            // Mark user as no longer first-time (in a real app, this would be done after successful transaction)
+            localStorage.setItem('hasTransactedBefore', 'true');
+            
+            // Redirect to payment page
+            window.location.href = "payment.html";
+        }
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update icon
+            const icon = document.querySelector('.theme-toggle i');
+            if (newTheme === 'light') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        // Initialize with first provider selected by default
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is first-time
+            checkFirstTimeUser();
+            
+            // Initialize theme
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            // Set correct icon
+            const icon = document.querySelector('.theme-toggle i');
+            if (savedTheme === 'light') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+            
+            // Select first provider
+            const firstProvider = document.querySelector('.provider-card');
+            if (firstProvider) {
+                selectProvider('Airtel', firstProvider);
+            }
+        });
+    </script>
+
+</body>
+</html>

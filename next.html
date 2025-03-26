@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fetcoin - Create Account</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --valid: #10b981;
+      --invalid: #ef4444;
+      --primary: #6c63ff;
+      --primary-dark: #564fd8;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-500: #6b7280;
+      --gray-700: #374151;
+      --radius: 12px;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f9fafb;
+      padding: 20px;
+    }
+    
+    .card {
+      width: 100%;
+      max-width: 440px;
+      background: white;
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    
+    .logo {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .logo i {
+      font-size: 3rem;
+      color: var(--primary);
+    }
+    
+    h1 {
+      font-size: 1.75rem;
+      color: var(--gray-700);
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    
+    .subtitle {
+      color: var(--gray-500);
+      margin-bottom: 1.75rem;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--gray-700);
+      font-size: 0.9rem;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 0.875rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+    }
+    
+    .input-icon {
+      position: absolute;
+      right: 15px;
+      top: 38px;
+      color: var(--gray-200);
+    }
+    
+    .validation-rules {
+      margin-top: 0.5rem;
+    }
+    
+    .rule {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.4rem;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+    
+    .rule i {
+      margin-right: 0.5rem;
+      font-size: 0.7rem;
+    }
+    
+    .valid-rule {
+      color: var(--valid);
+    }
+    
+    .invalid-rule {
+      color: var(--invalid);
+    }
+    
+    .strength-meter {
+      height: 4px;
+      background: var(--gray-200);
+      border-radius: 2px;
+      margin: 0.5rem 0;
+      overflow: hidden;
+    }
+    
+    .strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: all 0.3s ease;
+    }
+    
+    .terms {
+      display: flex;
+      align-items: flex-start;
+      margin: 1.5rem 0;
+    }
+    
+    .terms input {
+      width: auto;
+      margin-right: 0.75rem;
+      margin-top: 0.2rem;
+    }
+    
+    .terms label {
+      font-weight: normal;
+      font-size: 0.85rem;
+      color: var(--gray-500);
+    }
+    
+    .terms a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 0.875rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+    
+    .btn:disabled {
+      background: var(--gray-200);
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+    
+    .login-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--gray-500);
+    }
+    
+    .login-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .field-status {
+      position: absolute;
+      right: 15px;
+      top: 38px;
+      font-size: 0.9rem;
+    }
+    
+    .valid-field {
+      color: var(--valid);
+    }
+    
+    .invalid-field {
+      color: var(--invalid);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <i class="fas fa-coins"></i>
+    </div>
+    
+    <h1>Create Your Account</h1>
+    <p class="subtitle">Join Fetcoin to buy cheap data and airtime</p>
+    
+    <form id="signup-form">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Enter your email" required>
+        <span class="field-status" id="email-status"></span>
+        <div class="validation-rules">
+          <div class="rule" id="email-rule">
+            <i class="fas fa-circle" id="email-icon"></i>
+            <span>Valid email format</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="+234" required>
+        <span class="field-status" id="phone-status"></span>
+        <div class="validation-rules">
+          <div class="rule" id="phone-rule">
+            <i class="fas fa-circle" id="phone-icon"></i>
+            <span>Valid phone number</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Create a password" required>
+        <i class="fas fa-eye input-icon" id="toggle-password"></i>
+        <div class="strength-meter">
+          <div class="strength-bar" id="strength-bar"></div>
+        </div>
+        <div class="validation-rules">
+          <div class="rule" id="length-rule">
+            <i class="fas fa-circle" id="length-icon"></i>
+            <span>At least 8 characters</span>
+          </div>
+          <div class="rule" id="case-rule">
+            <i class="fas fa-circle" id="case-icon"></i>
+            <span>Uppercase and lowercase letters</span>
+          </div>
+          <div class="rule" id="number-rule">
+            <i class="fas fa-circle" id="number-icon"></i>
+            <span>At least one number</span>
+          </div>
+          <div class="rule" id="special-rule">
+            <i class="fas fa-circle" id="special-icon"></i>
+            <span>At least one special character</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="referral">Referral Code (Optional)</label>
+        <input type="text" id="referral" placeholder="Enter referral code">
+      </div>
+      
+      <div class="terms">
+        <input type="checkbox" id="terms" required>
+        <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+      </div>
+      
+      <button type="submit" class="btn" id="submit-btn" disabled>Create Account</button>
+    </form>
+    
+    <div class="login-link">
+      Already have an account? <a href="login.html">Log in</a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('signup-form');
+      const emailInput = document.getElementById('email');
+      const phoneInput = document.getElementById('phone');
+      const passwordInput = document.getElementById('password');
+      const togglePassword = document.getElementById('toggle-password');
+      const submitBtn = document.getElementById('submit-btn');
+      const strengthBar = document.getElementById('strength-bar');
+      
+      // Validation rules for all fields
+      const validationRules = {
+        email: {
+          element: document.getElementById('email-rule'),
+          icon: document.getElementById('email-icon'),
+          status: document.getElementById('email-status'),
+          regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+          isValid: false
+        },
+        phone: {
+          element: document.getElementById('phone-rule'),
+          icon: document.getElementById('phone-icon'),
+          status: document.getElementById('phone-status'),
+          regex: /^\+?[\d\s-]{10,}$/,
+          isValid: false
+        },
+        password: {
+          length: {
+            element: document.getElementById('length-rule'),
+            icon: document.getElementById('length-icon'),
+            regex: /.{8,}/,
+            isValid: false
+          },
+          case: {
+            element: document.getElementById('case-rule'),
+            icon: document.getElementById('case-icon'),
+            regex: /(?=.*[a-z])(?=.*[A-Z])/,
+            isValid: false
+          },
+          number: {
+            element: document.getElementById('number-rule'),
+            icon: document.getElementById('number-icon'),
+            regex: /\d/,
+            isValid: false
+          },
+          special: {
+            element: document.getElementById('special-rule'),
+            icon: document.getElementById('special-icon'),
+            regex: /[!@#$%^&*(),.?":{}|<>]/,
+            isValid: false
+          }
+        }
+      };
+      
+      // Toggle password visibility
+      togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+      });
+      
+      // Validate email in real-time
+      emailInput.addEventListener('input', function() {
+        validateField('email', this.value);
+        checkFormValidity();
+      });
+      
+      // Validate phone in real-time
+      phoneInput.addEventListener('input', function() {
+        validateField('phone', this.value);
+        checkFormValidity();
+      });
+      
+      // Validate password in real-time
+      passwordInput.addEventListener('input', function() {
+        validatePassword(this.value);
+        checkFormValidity();
+      });
+      
+      // Form submission
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (checkFormValidity()) {
+          // Create user object
+          const user = {
+            email: emailInput.value.trim(),
+            phone: phoneInput.value.trim(),
+            password: passwordInput.value,
+            referral: document.getElementById('referral').value.trim(),
+            createdAt: new Date().toISOString()
+          };
+          
+          // Save user data to localStorage
+          localStorage.setItem('fetcoinUser', JSON.stringify(user));
+          
+          // Redirect to successful.html
+          window.location.href = 'successful.html';
+        }
+      });
+      
+      // Terms checkbox change
+      document.getElementById('terms').addEventListener('change', checkFormValidity);
+      
+      function validateField(field, value) {
+        const rule = validationRules[field];
+        const isValid = rule.regex.test(value.trim());
+        
+        if (isValid) {
+          rule.element.classList.add('valid-rule');
+          rule.element.classList.remove('invalid-rule');
+          rule.icon.style.color = 'var(--valid)';
+          rule.status.innerHTML = '<i class="fas fa-check"></i>';
+          rule.status.classList.add('valid-field');
+          rule.status.classList.remove('invalid-field');
+          rule.isValid = true;
+        } else {
+          rule.element.classList.add('invalid-rule');
+          rule.element.classList.remove('valid-rule');
+          rule.icon.style.color = 'var(--invalid)';
+          rule.status.innerHTML = '<i class="fas fa-times"></i>';
+          rule.status.classList.add('invalid-field');
+          rule.status.classList.remove('valid-field');
+          rule.isValid = false;
+        }
+        
+        return isValid;
+      }
+      
+      function validatePassword(password) {
+        let strength = 0;
+        
+        // Check each password rule
+        for (const [ruleName, rule] of Object.entries(validationRules.password)) {
+          const isValid = rule.regex.test(password);
+          
+          if (isValid) {
+            rule.element.classList.add('valid-rule');
+            rule.element.classList.remove('invalid-rule');
+            rule.icon.style.color = 'var(--valid)';
+            strength++;
+            rule.isValid = true;
+          } else {
+            rule.element.classList.add('invalid-rule');
+            rule.element.classList.remove('valid-rule');
+            rule.icon.style.color = 'var(--invalid)';
+            rule.isValid = false;
+          }
+        }
+        
+        // Update strength meter
+        updateStrengthMeter(strength);
+        
+        // Return whether all password rules are met
+        return strength === 4;
+      }
+      
+      function updateStrengthMeter(strength) {
+        let width = 0;
+        let color = '';
+        
+        switch(strength) {
+          case 1:
+            width = 25;
+            color = 'var(--invalid)';
+            break;
+          case 2:
+            width = 50;
+            color = '#f59e0b'; // orange
+            break;
+          case 3:
+            width = 75;
+            color = '#3b82f6'; // blue
+            break;
+          case 4:
+            width = 100;
+            color = 'var(--valid)';
+            break;
+          default:
+            width = 0;
+            color = 'var(--gray-200)';
+        }
+        
+        strengthBar.style.width = `${width}%`;
+        strengthBar.style.backgroundColor = color;
+      }
+      
+      function checkFormValidity() {
+        // Check all validations
+        const emailValid = validationRules.email.isValid;
+        const phoneValid = validationRules.phone.isValid;
+        const passwordValid = Object.values(validationRules.password).every(rule => rule.isValid);
+        const termsChecked = document.getElementById('terms').checked;
+        
+        // Enable/disable submit button
+        const formValid = emailValid && phoneValid && passwordValid && termsChecked;
+        submitBtn.disabled = !formValid;
+        
+        return formValid;
+      }
+    });
+  </script>
+</body>
+</html>

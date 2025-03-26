@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Loan Form</title>
+
+  <style>
+    /* Basic reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: sans-serif;
+    }
+
+    body {
+      background-color: #000; /* Black background */
+      color: #fff; /* White text */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .loan-container {
+      width: 300px;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #111; /* Slightly lighter black for contrast */
+    }
+
+    .loan-container h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input, select, textarea {
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background-color: #222;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #888;
+    }
+
+    textarea {
+      resize: none;
+      height: 60px;
+    }
+
+    /* Submit button */
+    button {
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      background-color: #f90; /* Orange button */
+      color: #000; /* Black text on the button */
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #e68a00;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="loan-container">
+    <h1>Loan</h1>
+    <form id="loan-form">
+      <label for="emailAddress">Email Address</label>
+      <input type="email" id="emailAddress" name="emailAddress" placeholder="Email Address" required />
+
+      <label for="loanPrice">Loan Price</label>
+      <input type="number" id="loanPrice" name="loanPrice" placeholder="0" required />
+
+      <label for="school">School</label>
+      <input type="text" id="school" name="school" placeholder="Enter School" required />
+
+      <label for="regNo">Reg. No.</label>
+      <input type="text" id="regNo" name="regNo" placeholder="Enter Reg No." required />
+
+      <label for="selectDate">Select Date</label>
+      <input type="date" id="selectDate" name="selectDate" required />
+
+      <label for="reasonsForLoan">Reasons For Loan</label>
+      <textarea id="reasonsForLoan" name="reasonsForLoan" placeholder="Enter Reason For The Loan." required></textarea>
+
+      <button type="submit">Apply For Loan</button>
+    </form>
+  </div>
+
+  <script>
+    // Handle form submission
+    document.getElementById('loan-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      // Redirect to payment page
+      window.location.href = "payment.html";
+    });
+  </script>
+
+</body>
+</html>

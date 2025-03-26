@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Bill Pay</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #121212;
+            color: #ffffff;
+        }
+        .bill-form {
+            border: 1px solid #333;
+            padding: 25px;
+            border-radius: 10px;
+            background: #1e1e1e;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        h2 {
+            margin-top: 0;
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #aaa;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            box-sizing: border-box;
+            background-color: #2d2d2d;
+            color: #fff;
+            font-size: 16px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        .amount {
+            font-size: 28px;
+            text-align: center;
+            margin: 25px 0;
+            font-weight: bold;
+            color: #4CAF50;
+            padding: 15px;
+            background-color: rgba(76, 175, 80, 0.1);
+            border-radius: 8px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="bill-form">
+        <h2>Pay Your Bill</h2>
+        
+        <div class="form-group">
+            <label for="bill-type">Bill Type</label>
+            <select id="bill-type">
+                <option value="">Select bill type</option>
+                <option value="electricity">Electricity</option>
+                <option value="water">Water</option>
+                <option value="internet">Internet</option>
+                <option value="tv">Cable TV</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="account">Account Number</label>
+            <input type="text" id="account" placeholder="Enter your account number">
+        </div>
+        
+        <div class="form-group">
+            <label for="amount">Amount (₦)</label>
+            <input type="number" id="amount" placeholder="Enter amount">
+        </div>
+        
+        <div class="amount">₦0.00</div>
+        
+        <button id="pay-btn" onclick="processPayment()">PAY NOW</button>
+    </div>
+
+    <script>
+        // Update amount display
+        const amountInput = document.getElementById('amount');
+        const amountDisplay = document.querySelector('.amount');
+        
+        amountInput.addEventListener('input', function() {
+            const value = parseFloat(this.value) || 0;
+            amountDisplay.textContent = `₦${value.toFixed(2)}`;
+        });
+        
+        // Process payment and redirect
+        function processPayment() {
+            const billType = document.getElementById('bill-type').value;
+            const account = document.getElementById('account').value;
+            const amount = amountInput.value;
+            
+            if (!billType || !account || !amount) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            // Store data in localStorage to pass to payment page
+            localStorage.setItem('billType', billType);
+            localStorage.setItem('account', account);
+            localStorage.setItem('amount', amount);
+            
+            // Redirect to payment page
+            window.location.href = 'payment.html';
+        }
+    </script>
+</body>
+</html>

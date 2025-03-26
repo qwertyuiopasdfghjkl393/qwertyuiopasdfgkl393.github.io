@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile | MyWallet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .profile-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #6C5CE7;
+            margin: 0 auto 15px;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+        
+        .profile-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #2d3436;
+        }
+        
+        .profile-username {
+            color: #636e72;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .profile-bio {
+            color: #636e72;
+            font-size: 14px;
+            max-width: 300px;
+            margin: 0 auto 20px;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #6C5CE7;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #636e72;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .profile-details {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .detail-item {
+            display: flex;
+            margin-bottom: 20px;
+            pointer-events: none;
+        }
+        
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .detail-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            color: #6C5CE7;
+        }
+        
+        .detail-content {
+            flex: 1;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            color: #636e72;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+        
+        .detail-value {
+            font-size: 16px;
+            color: #2d3436;
+            font-weight: 500;
+        }
+        
+        .verification-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #e3f9e5;
+            color: #00b894;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        
+        .verification-icon {
+            width: 14px;
+            height: 14px;
+            margin-right: 4px;
+        }
+        
+        .join-date {
+            text-align: center;
+            margin-top: 30px;
+            color: #636e72;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Profile" class="profile-avatar">
+            <h1 class="profile-name">user
+            <div class="profile-username">@.......
+            <div class="profile-bio"s</div>
+            
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-value">₦200.00</div>
+                    <div class="stat-label">Balance</div>
+                </div>
+                <div class="stat-item">
+                    
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Referrals</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile-details">
+            <div class="detail-item">
+                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                <div class="detail-content">
+                    <div class="detail-label">Email</div>
+                    <div class="detail-value">...........................</div>
+                    <div class="verification-badge">
+                        <svg class="verification-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Verified
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-item">
+                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                </svg>
+                <div class="detail-content">
+                    <div class="detail-label">Phone</div>
+                    <div class="detail-value">+234 .............</div>
+                    <div class="verification-badge">
+                        <svg class="verification-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Verified
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-item">
+                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <div class="detail-content">
+                    <div class="detail-label">Location</div>
+                    <div class="detail-value">.............</div>
+                </div>
+            </div>
+            
+            <div class="detail-item">
+                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                <div class="detail-content">
+                    <div class="detail-label">Occupation</div>
+                    <div class="detail-value">........</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="join-date">
+            
+        </div>
+    </div>
+
+    <script>
+        // Disable all click events
+        document.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }, true);
+        
+        // Make cursor default to reinforce non-clickable nature
+        document.body.style.cursor = 'default';
+    </script>
+</body>
+</html>

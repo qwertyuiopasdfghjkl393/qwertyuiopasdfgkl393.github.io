@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Notifications</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C5CE7;
+            --primary-light: #A29BFE;
+            --accent: #FD79A8;
+            --light: #F5F6FA;
+            --dark: #2D3436;
+            --gray: #636E72;
+            --border: #DFE6E9;
+            --card-bg: #FFFFFF;
+            --unread-bg: rgba(108, 92, 231, 0.05);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin: 0;
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .notification-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .notification-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        .clear-all {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .clear-all:hover {
+            text-decoration: underline;
+        }
+        
+        .notifications-container {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .notification {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            background-color: var(--card-bg);
+            border-left: 4px solid var(--primary);
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .notification.unread {
+            background-color: var(--unread-bg);
+            border-left: 4px solid var(--accent);
+        }
+        
+        .notification.unread::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent);
+            border-radius: 50%;
+        }
+        
+        .notification:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(108, 92, 231, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-sender {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .notification-sender-name {
+            color: var(--primary);
+        }
+        
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .notification-message {
+            font-size: 0.9rem;
+        }
+        
+        .no-notifications {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--gray);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            75% { transform: rotate(15deg); }
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .new-notification {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h1>My Notifications</h1>
+            </div>
+            <p>View your messages and updates</p>
+        </header>
+
+        <div class="notification-header">
+            <h2 class="notification-title"><i class="fas fa-inbox"></i> Inbox</h2>
+            <div class="notification-bell" id="notificationBell">
+                <i class="fas fa-bell"></i>
+                <span class="notification-count" id="notificationCount">0</span>
+            </div>
+        </div>
+
+        <button class="clear-all" id="clearAll">
+            <i class="fas fa-trash-alt"></i> Clear All
+        </button>
+
+        <div class="notifications-container" id="notificationsContainer">
+            <div class="no-notifications" id="noNotifications">
+                <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                <p>Your inbox is empty</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const notificationsContainer = document.getElementById('notificationsContainer');
+            const notificationCount = document.getElementById('notificationCount');
+            const notificationBell = document.getElementById('notificationBell');
+            const clearAllBtn = document.getElementById('clearAll');
+            const noNotifications = document.getElementById('noNotifications');
+            
+            // Current user ID (in a real app, this would come from authentication)
+            const currentUserId = 'user1';
+            
+            // Load notifications
+            let notifications = [];
+            let unreadCount = 0;
+            
+            function loadNotifications() {
+                notifications = NotificationSystem.getUserNotifications(currentUserId);
+                unreadCount = notifications.filter(n => !n.read).length;
+                renderNotifications();
+            }
+            
+            // Render notifications
+            function renderNotifications() {
+                notificationsContainer.innerHTML = '';
+                
+                if (notifications.length === 0) {
+                    noNotifications.style.display = 'block';
+                    notificationCount.textContent = '0';
+                    notificationCount.style.display = 'none';
+                    return;
+                }
+                
+                noNotifications.style.display = 'none';
+                
+                // Sort by timestamp (newest first)
+                notifications.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                notifications.forEach(notification => {
+                    const notificationElement = document.createElement('div');
+                    notificationElement.className = `notification ${notification.read ? '' : 'unread'}`;
+                    
+                    // Add animation for new notifications
+                    if (!notification.read) {
+                        notificationElement.classList.add('new-notification');
+                    }
+                    
+                    notificationElement.innerHTML = `
+                        <div class="notification-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-sender">
+                                <span class="notification-sender-name">${notification.sender}</span>
+                                <span class="notification-time">${formatTime(notification.timestamp)}</span>
+                            </div>
+                            <p class="notification-message">
+                                <strong>${notification.title}</strong>: ${notification.message}
+                            </p>
+                        </div>
+                    `;
+                    
+                    // Mark as read when clicked
+                    notificationElement.addEventListener('click', function() {
+                        if (!notification.read) {
+                            NotificationSystem.markAsRead(currentUserId, notification.id);
+                            unreadCount--;
+                            updateNotificationCount();
+                            renderNotifications();
+                            
+                            // Remove the unread class after click
+                            setTimeout(() => {
+                                notificationElement.classList.remove('unread');
+                            }, 300);
+                        }
+                    });
+                    
+                    notificationsContainer.appendChild(notificationElement);
+                });
+                
+                updateNotificationCount();
+            }
+            
+            // Update notification count
+            function updateNotificationCount() {
+                if (unreadCount > 0) {
+                    notificationCount.textContent = unreadCount;
+                    notificationCount.style.display = 'flex';
+                    notificationBell.classList.add('shake');
+                    setTimeout(() => {
+                        notificationBell.classList.remove('shake');
+                    }, 500);
+                    
+                    // Show desktop notification for new unread messages
+                    const newUnread = notifications.filter(n => !n.read && 
+                        new Date(n.timestamp).getTime() > Date.now() - 10000);
+                    
+                    if (newUnread.length > 0) {
+                        showDesktopNotification(newUnread[0].title, newUnread[0].message);
+                    }
+                } else {
+                    notificationCount.style.display = 'none';
+                }
+            }
+            
+            // Clear all notifications
+            clearAllBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear all notifications?')) {
+                    NotificationSystem.clearNotifications(currentUserId);
+                    loadNotifications();
+                }
+            });
+            
+            // Listen for new notifications
+            window.addEventListener('newNotification', function() {
+                loadNotifications();
+            });
+            
+            // Check for new notifications periodically
+            setInterval(loadNotifications, 5000);
+            
+            // Initial load
+            loadNotifications();
+        });
+    </script>
+</body>
+</html>

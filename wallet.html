@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyWallet - Digital Wallet</title>
+    <style>
+        :root {
+            --primary: #6C5CE7;
+            --primary-dark: #5649C0;
+            --accent: #00CEFF;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --danger: #FF5252;
+            
+            /* Light mode colors */
+            --bg-light: #f5f5f5;
+            --card-light: #ffffff;
+            --text-dark: #333333;
+            --text-muted-light: #666666;
+            --border-light: #e0e0e0;
+            
+            /* Dark mode colors */
+            --bg-dark: #121212;
+            --card-dark: #1E1E2D;
+            --text-light: #FFFFFF;
+            --text-muted-dark: #B8B8D2;
+            --border-dark: #333333;
+            
+            /* Default to dark mode */
+            --bg: var(--bg-dark);
+            --card: var(--card-dark);
+            --text: var(--text-light);
+            --text-muted: var(--text-muted-dark);
+            --border: var(--border-dark);
+        }
+        
+        /* Light mode */
+        body.light-mode {
+            --bg: var(--bg-light);
+            --card: var(--card-light);
+            --text: var(--text-dark);
+            --text-muted: var(--text-muted-light);
+            --border: var(--border-light);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding-bottom: 80px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .header-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        
+        /* Theme toggle in header */
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Notification Badge */
+        .notification-icon {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .has-notifications .header-icon {
+            filter: hue-rotate(300deg) saturate(5);
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+            position: relative;
+        }
+        
+        .balance-title {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .balance-amount {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .balance-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .balance-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .balance-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Quick Actions */
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 10px;
+        }
+        
+        .section-title h3, .section-title a {
+            color: var(--text);
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .quick-action {
+            background: var(--card);
+            padding: 15px 10px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: var(--text);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        
+        .quick-action:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: rgba(108, 92, 231, 0.1);
+        }
+        
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 8px;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Gold circle effect */
+        .action-icon::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .quick-action:hover .action-icon::after {
+            opacity: 1;
+        }
+        
+        .action-icon img {
+            width: 20px;
+            height: 20px;
+            z-index: 1;
+        }
+        
+        .action-name {
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* Transactions */
+        .transactions-container {
+            background: var(--card);
+            padding: 15px 0;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+        }
+        
+        .transaction {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 20px;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        
+        .transaction:hover {
+            background: rgba(108, 92, 231, 0.05);
+        }
+        
+        .transaction-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(108, 92, 231, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .transaction-icon img {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .transaction-details h4 {
+            margin: 0 0 4px;
+            font-size: 15px;
+            color: var(--text);
+        }
+        
+        .transaction-details p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .transaction-amount {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .credit {
+            color: var(--success);
+        }
+        
+        .debit {
+            color: var(--danger);
+        }
+        
+        .view-all {
+            text-align: center;
+            padding: 10px;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            background: var(--card);
+            padding: 12px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            border-top: 1px solid var(--border);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 10px;
+            transition: all 0.2s;
+            padding: 5px;
+            border-radius: 8px;
+        }
+        
+        .nav-item.active {
+            color: var(--accent);
+            background: rgba(108, 92, 231, 0.1);
+        }
+        
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--text);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text);
+        }
+        
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .confirm-btn {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .confirm-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .cancel-btn {
+            background: var(--text-muted);
+            color: white;
+        }
+        
+        .cancel-btn:hover {
+            background: var(--text);
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -30px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+        
+        /* Compustry Feature */
+        .compustry-card {
+            background: var(--card);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+        }
+        
+        .compustry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .compustry-title {
+            font-size: 16px;
+            color: var(--accent);
+        }
+        
+        .compustry-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .compustry-progress {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .compustry-progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 65%;
+            border-radius: 3px;
+        }
+        
+        .compustry-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        /* Profile Page */
+        .profile-page {
+            display: none;
+        }
+        
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .profile-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text);
+        }
+        
+        .profile-email {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .profile-menu {
+            margin-top: 30px;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .menu-item:hover {
+            background: rgba(108, 92, 231, 0.05);
+        }
+        
+        .menu-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+        }
+        
+        .menu-text {
+            flex: 1;
+            color: var(--text);
+        }
+        
+        .menu-arrow {
+            width: 16px;
+            height: 16px;
+        }
+        
+        /* Settings Page */
+        .settings-page {
+            display: none;
+        }
+        
+        .settings-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .settings-item:hover {
+            background: rgba(108, 92, 231, 0.05);
+        }
+        
+        .settings-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+        }
+        
+        .settings-text {
+            flex: 1;
+            color: var(--text);
+        }
+        
+        .settings-value {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* Image path display */
+        .image-path {
+            position: fixed;
+            bottom: 80px;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px;
+            font-size: 10px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        /* Hide/show balance */
+        .balance-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Image path display -->
+    <div class="image-path" id="imagePathDisplay"></div>
+    
+    <!-- Main App Page -->
+    <div class="container" id="appPage">
+        <!-- Header -->
+        <div class="header">
+            <div class="profile" onclick="showProfilePage()">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile" class="profile-img" data-path="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+                <span>Hi, User</span>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <img src="https://cdn-icons-png.flaticon.com/512/581/581601.png" width="20" alt="Theme" data-path="https://cdn-icons-png.flaticon.com/512/581/581601.png">
+                </button>
+                <a href="notification.html" class="notification-icon has-notifications">
+                    <img src="https://cdn-icons-png.flaticon.com/512/565/565422.png" alt="Notifications" class="header-icon" data-path="https://cdn-icons-png.flaticon.com/512/565/565422.png">
+                    <span class="notification-badge">3</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Balance Card -->
+        <div class="balance-card">
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <p class="balance-title">Available Balance</p>
+                <button class="balance-toggle" onclick="toggleBalance()">👁️</button>
+            </div>
+            <h2 class="balance-amount" id="balance">₦200.00</h2>
+            <div class="balance-actions">
+                <button class="balance-btn btn-primary" id="addMoneyBtn">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3524/3524388.png" width="16" alt="+" data-path="https://cdn-icons-png.flaticon.com/512/3524/3524388.png"> Add Money
+                </button>
+                <a href="withdraw.html" class="balance-btn btn-secondary" id="withdrawBtn" style="text-decoration: none;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/159/159804.png" width="16" alt="->" data-path="https://cdn-icons-png.flaticon.com/512/159/159804.png"> Withdraw
+                </a>
+            </div>
+        </div>
+        
+        <!-- Compustry Feature -->
+        <div class="compustry-card">
+            <div class="compustry-header">
+                <span class="compustry-title">Compustry Challenge</span>
+                <span class="compustry-badge">Active</span>
+            </div>
+            <p>Complete 5 transfer to earn ₦500 bonus</p>
+            <div class="compustry-progress">
+                <div class="compustry-progress-bar"></div>
+            </div>
+            <div class="compustry-details">
+                <span>2/5 transactions</span>
+                <span>₦500 reward</span>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="section-title">
+            <h3>Quick Actions</h3>
+        </div>
+        
+        <div class="quick-actions">
+            <a href="airtime.html" class="quick-action">
+                <div class="action-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3059/3059518.png" alt="Airtime" data-path="https://cdn-icons-png.flaticon.com/512/3059/3059518.png">
+                </div>
+                <span class="action-name">Airtime</span>
+            </a>
+            <a href="data.html" class="quick-action">
+                <div class="action-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/355/355437.png" alt="Data" data-path="https://cdn-icons-png.flaticon.com/512/355/355437.png">
+                </div>
+                <span class="action-name">Data</span>
+            </a>
+            <a href="cabletv.html" class="quick-action">
+                <div class="action-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2965/2965278.png" alt="TV" data-path="https://cdn-icons-png.flaticon.com/512/2965/2965278.png">
+                </div>
+                <span class="action-name">Cable TV</span>
+            </a>
+            <a href="bill.html" class="quick-action">
+                <div class="action-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1006/1006585.png" alt="Bills" data-path="https://cdn-icons-png.flaticon.com/512/1006/1006585.png">
+                </div>
+                <span class="action-name">Bills</span>
+            </a>
+            <a href="transfer.html" class="quick-action">
+                <div class="action-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/159/159812.png" alt="Transfer" data-path="https://cdn-icons-png.flaticon.com/512/159/159812.png">
+                </div>
+                <span class="action-name">Transfer</span>
+            </a>
+            <a href="betting.html" class="quick-action">
+                <div class="action-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/855/855643.png" alt="Betting" data-path="https://cdn-icons-png.flaticon.com/512/855/855643.png">
+                </div>
+                <span class="action-name">Betting</span>
+            </a>
+            <a href="loan.html" class="quick-action">
+                <div class="action-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3446/3446283.png" alt="Loan" data-path="https://cdn-icons-png.flaticon.com/512/3446/3446283.png">
+                </div>
+                <span class="action-name">Loan</span>
+            </a>
+            <a href="more.html" class="quick-action">
+                <div class="action-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828919.png" alt="More" data-path="https://cdn-icons-png.flaticon.com/512/1828/1828919.png">
+                </div>
+                <span class="action-name">More</span>
+            </a>
+        </div>
+        
+        <!-- Transactions -->
+        <div class="section-title">
+            <h3>Recent Transactions</h3>
+            <a href="transactions.html">See All</a>
+        </div>
+        
+        <div class="transactions-container" id="transactionList">
+            <div class="transaction">
+                <div class="transaction-info">
+                    <div class="transaction-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1570/1570139.png" alt="Transfer" data-path="https://cdn-icons-png.flaticon.com/512/1570/1570139.png">
+                    </div>
+                    <div class="transaction-details">
+                        <h4>Money Received</h4>
+                        <p>From customer service • Today</p>
+                    </div>
+                </div>
+                <div class="transaction-amount credit">+₦200</div>
+            </div>
+            
+            <div class="view-all">View All Transactions</div>
+        </div>
+    </div>
+    
+    <!-- Profile Page -->
+    <div class="container profile-page" id="profilePage">
+        <div class="profile-header">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile" class="profile-avatar" data-path="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+            <h2 class="profile-name">user</h2>
+            <p class="profile-email">............</p>
+        </div>
+        
+        <div class="profile-stats">
+            <div class="stat-item">
+                <div class="stat-value">₦200.00</div>
+                <div class="stat-label">Balance</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">12</div>
+                <div class="stat-label"></div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">1</div>
+                <div class="stat-label">Referrals</div>
+            </div>
+        </div>
+        
+        <div class="profile-menu">
+            <div class="menu-item" onclick="showSettingsPage()">
+                <img src="https://cdn-icons-png.flaticon.com/512/126/126472.png" alt="Settings" class="menu-icon" data-path="https://cdn-icons-png.flaticon.com/512/126/126472.png">
+                <span class="menu-text">Settings</span>
+                <img src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt=">" class="menu-arrow" data-path="https://cdn-icons-png.flaticon.com/512/271/271228.png">
+            </div>
+            <div class="menu-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/3132/3132699.png" alt="Wallet" class="menu-icon" data-path="https://cdn-icons-png.flaticon.com/512/3132/3132699.png">
+                <span class="menu-text">Wallet Details</span>
+                <img src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt=">" class="menu-arrow" data-path="https://cdn-icons-png.flaticon.com/512/271/271228.png">
+            </div>
+            <div class="menu-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/3446/3446283.png" alt="Loan" class="menu-icon" data-path="https://cdn-icons-png.flaticon.com/512/3446/3446283.png">
+                <span class="menu-text">Loan History</span>
+                <img src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt=">" class="menu-arrow" data-path="https://cdn-icons-png.flaticon.com/512/271/271228.png">
+            </div>
+            <div class="menu-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/217/217853.png" alt="Rewards" class="menu-icon" data-path="https://cdn-icons-png.flaticon.com/512/217/217853.png">
+                <span class="menu-text">Rewards</span>
+                <img src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt=">" class="menu-arrow" data-path="https://cdn-icons-png.flaticon.com/512/271/271228.png">
+            </div>
+            <div class="menu-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/159/159832.png" alt="Help" class="menu-icon" data-path="https://cdn-icons-png.flaticon.com/512/159/159832.png">
+                <span class="menu-text">Help & Support</span>
+                <img src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt=">" class="menu-arrow" data-path="https://cdn-icons-png.flaticon.com/512/271/271228.png">
+            </div>
+            <div class="menu-item" onclick="logout()">
+                <img src="https://cdn-icons-png.flaticon.com/512/126/126467.png" alt="Logout" class="menu-icon" data-path="https://cdn-icons-png.flaticon.com/512/126/126467.png">
+                <span class="menu-text">Logout</span>
+                <img src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt=">" class="menu-arrow" data-path="https://cdn-icons-png.flaticon.com/512/271/271228.png">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Page -->
+    <div class="container settings-page" id="settingsPage">
+        <div class="header">
+            <button onclick="showProfilePage()" style="background: none; border: none; color: var(--accent);">
+                ← Back
+            </button>
+            <h2>Settings</h2>
+            <div style="width: 24px;"></div> <!-- Spacer for alignment -->
+        </div>
+        
+        <div class="settings-menu">
+            <div class="settings-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/1069/1069046.png" alt="Security" class="settings-icon" data-path="https://cdn-icons-png.flaticon.com/512/1069/1069046.png">
+                <span class="settings-text">Security</span>
+                <img src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt=">" class="menu-arrow" data-path="https://cdn-icons-png.flaticon.com/512/271/271228.png">
+            </div>
+            <div class="settings-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/2948/2948035.png" alt="Notifications" class="settings-icon" data-path="https://cdn-icons-png.flaticon.com/512/2948/2948035.png">
+                <span class="settings-text">Notifications</span>
+                <div class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </div>
+            </div>
+            <div class="settings-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/3143/3143477.png" alt="Privacy" class="settings-icon" data-path="https://cdn-icons-png.flaticon.com/512/3143/3143477.png">
+                <span class="settings-text">Privacy</span>
+                <img src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt=">" class="menu-arrow" data-path="https://cdn-icons-png.flaticon.com/512/271/271228.png">
+            </div>
+            <div class="settings-item" onclick="toggleTheme()">
+                <img src="https://cdn-icons-png.flaticon.com/512/929/929430.png" alt="Theme" class="settings-icon" data-path="https://cdn-icons-png.flaticon.com/512/929/929430.png">
+                <span class="settings-text">Appearance</span>
+                <span class="settings-value" id="themeValue">Dark</span>
+                <img src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt=">" class="menu-arrow" data-path="https://cdn-icons-png.flaticon.com/512/271/271228.png">
+            </div>
+            <div class="settings-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/2936/2936886.png" alt="Language" class="settings-icon" data-path="https://cdn-icons-png.flaticon.com/512/2936/2936886.png">
+                <span class="settings-text">Language</span>
+                <span class="settings-value">English</span>
+                <img src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt=">" class="menu-arrow" data-path="https://cdn-icons-png.flaticon.com/512/271/271228.png">
+            </div>
+            <div class="settings-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/159/159832.png" alt="Help" class="settings-icon" data-path="https://cdn-icons-png.flaticon.com/512/159/159832.png">
+                <span class="settings-text">Help Center</span>
+                <img src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt=">" class="menu-arrow" data-path="https://cdn-icons-png.flaticon.com/512/271/271228.png">
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Money Modal -->
+    <div class="modal" id="addMoneyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Money</h3>
+                <button class="close-modal" onclick="closeModal('addMoneyModal')">&times;</button>
+            </div>
+            <div class="input-group">
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" placeholder="Enter amount">
+            </div>
+            <div class="input-group">
+                <label for="paymentMethod">Payment Method</label>
+                <select id="paymentMethod">
+                    <option value="">Select payment method</option>
+                    <option value="card">Debit Card</option>
+                    <option value="bank">Bank Transfer</option>
+                    <option value="ussd">USSD</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeModal('addMoneyModal')">Cancel</button>
+                <button class="confirm-btn" onclick="addMoney()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Make Payment</h3>
+                <button class="close-modal" onclick="closeModal('paymentModal')">&times;</button>
+            </div>
+            <div class="input-group">
+                <label for="paymentAmount">Amount</label>
+                <input type="number" id="paymentAmount" placeholder="Enter amount">
+            </div>
+            <div class="input-group">
+                <label for="recipient">Recipient</label>
+                <input type="text" id="recipient" placeholder="Enter recipient name">
+            </div>
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeModal('paymentModal')">Cancel</button>
+                <button class="confirm-btn" onclick="makePayment()">Pay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="notification" id="notificationToast">
+       pending...
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item active">
+            <img src="https://cdn-icons-png.flaticon.com/512/1946/1946436.png" alt="Home" class="nav-icon" data-path="https://cdn-icons-png.flaticon.com/512/1946/1946436.png">
+            <span>Home</span>
+        </a>
+        <a href="transactions.html" class="nav-item">
+            <img src="https://cdn-icons-png.flaticon.com/512/3652/3652191.png" alt="Transactions" class="nav-icon" data-path="https://cdn-icons-png.flaticon.com/512/3652/3652191.png">
+            <span>Transactions</span>
+        </a>
+        <a href="bonus.html" class="nav-item">
+            <img src="https://cdn-icons-png.flaticon.com/512/217/217853.png" alt="Bonus" class="nav-icon" data-path="https://cdn-icons-png.flaticon.com/512/217/217853.png">
+            <span>Bonus</span>
+        </a>
+        <a href="profile.html" class="nav-item" onclick="showProfilePage()">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile" class="nav-icon" data-path="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+            <span>Profile</span>
+        </a>
+    </div>
+
+    <script>
+        // Transaction history array
+        let transactions = [
+            {
+                type: "credit",
+                title: "Money Received",
+                description: "From customer service • Today",
+                amount: 200,
+                icon: "https://cdn-icons-png.flaticon.com/512/1570/1570139.png"
+            }
+        ];
+        
+        // Current balance
+        let balance = 200;
+        let balanceVisible = true;
+        
+        // Page Navigation
+        function showProfilePage() {
+            document.getElementById('appPage').style.display = 'none';
+            document.getElementById('profilePage').style.display = 'block';
+            document.getElementById('settingsPage').style.display = 'none';
+        }
+
+        function showSettingsPage() {
+            document.getElementById('appPage').style.display = 'none';
+            document.getElementById('profilePage').style.display = 'none';
+            document.getElementById('settingsPage').style.display = 'block';
+        }
+
+        function showAppPage() {
+            document.getElementById('appPage').style.display = 'block';
+            document.getElementById('profilePage').style.display = 'none';
+            document.getElementById('settingsPage').style.display = 'none';
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Notification Management
+        function updateNotificationBadge(count) {
+            const badge = document.querySelector('.notification-badge');
+            const icon = document.querySelector('.notification-icon');
+            
+            if (count > 0) {
+                badge.textContent = count;
+                badge.style.display = 'flex';
+                icon.classList.add('has-notifications');
+                
+                if (count > 5) {
+                    badge.style.animation = 'pulse 0.8s infinite';
+                }
+            } else {
+                badge.style.display = 'none';
+                icon.classList.remove('has-notifications');
+            }
+        }
+
+        // Show notification toast
+        function showNotification(message) {
+            const toast = document.getElementById('notificationToast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Add Money Function
+        function addMoney() {
+            const amount = document.getElementById('amount').value;
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            if (!paymentMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+            
+            // Simulate successful transaction
+            closeModal('addMoneyModal');
+            showNotification(`₦${amount} added successfully!`);
+            
+            // Update balance
+            balance += parseFloat(amount);
+            updateBalance();
+            
+            // Add to transaction history
+            transactions.unshift({
+                type: "credit",
+                title: "Money Added",
+                description: `Via ${paymentMethod} • Just now`,
+                amount: parseFloat(amount),
+                icon: "https://cdn-icons-png.flaticon.com/512/3524/3524388.png"
+            });
+            
+            updateTransactionList();
+        }
+        
+        // Make Payment Function
+        function makePayment() {
+            const amount = document.getElementById('paymentAmount').value;
+            const recipient = document.getElementById('recipient').value;
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            if (!recipient) {
+                alert('Please enter recipient name');
+                return;
+            }
+            
+            if (parseFloat(amount) > balance) {
+                alert('Insufficient balance');
+                return;
+            }
+            
+            // Simulate successful payment
+            closeModal('paymentModal');
+            showNotification(`₦${amount} sent to ${recipient} successfully!`);
+            
+            // Update balance
+            balance -= parseFloat(amount);
+            updateBalance();
+            
+            // Add to transaction history
+            transactions.unshift({
+                type: "debit",
+                title: `Payment to ${recipient}`,
+                description: `Transfer • Just now`,
+                amount: parseFloat(amount),
+                icon: "https://cdn-icons-png.flaticon.com/512/159/159812.png"
+            });
+            
+            updateTransactionList();
+        }
+        
+        // Update balance display
+        function updateBalance() {
+            const balanceElement = document.getElementById('balance');
+            if (balanceVisible) {
+                balanceElement.textContent = `₦${balance.toFixed(2)}`;
+            } else {
+                balanceElement.textContent = '••••••';
+            }
+        }
+        
+        // Toggle balance visibility
+        function toggleBalance() {
+            balanceVisible = !balanceVisible;
+            updateBalance();
+        }
+        
+        // Update transaction list
+        function updateTransactionList() {
+            const transactionList = document.getElementById('transactionList');
+            transactionList.innerHTML = '';
+            
+            // Show only the first 3 transactions
+            const displayCount = Math.min(3, transactions.length);
+            
+            for (let i = 0; i < displayCount; i++) {
+                const transaction = transactions[i];
+                
+                const transactionElement = document.createElement('div');
+                transactionElement.className = 'transaction';
+                transactionElement.innerHTML = `
+                    <div class="transaction-info">
+                        <div class="transaction-icon">
+                            <img src="${transaction.icon}" alt="${transaction.title}" data-path="${transaction.icon}">
+                        </div>
+                        <div class="transaction-details">
+                            <h4>${transaction.title}</h4>
+                            <p>${transaction.description}</p>
+                        </div>
+                    </div>
+                    <div class="transaction-amount ${transaction.type}">${transaction.type === 'credit' ? '+' : '-'}₦${transaction.amount}</div>
+                `;
+                
+                transactionList.appendChild(transactionElement);
+            }
+            
+            // Add view all button
+            const viewAll = document.createElement('div');
+            viewAll.className = 'view-all';
+            viewAll.textContent = 'View All Transactions';
+            viewAll.onclick = function() {
+                // In a real app, this would navigate to a full transactions page
+                alert('Showing all transactions');
+            };
+            transactionList.appendChild(viewAll);
+        }
+        
+        // Toggle theme between light and dark
+        function toggleTheme() {
+            const body = document.body;
+            const themeValue = document.getElementById('themeValue');
+            
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                themeValue.textContent = 'Dark';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.add('light-mode');
+                themeValue.textContent = 'Light';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        // Check for saved theme preference
+        function checkTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeValue = document.getElementById('themeValue');
+            
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeValue.textContent = 'Light';
+            } else {
+                document.body.classList.remove('light-mode');
+                themeValue.textContent = 'Dark';
+            }
+        }
+        
+        // Show image paths when clicked
+        function setupImagePathDisplay() {
+            // First display all image paths in console
+            console.log("All image paths:");
+            const images = document.querySelectorAll('img[data-path]');
+            images.forEach(img => {
+                console.log(img.alt + ": " + img.getAttribute('data-path'));
+            });
+            
+            // Then set up click handler to show path
+            document.addEventListener('click', function(e) {
+                if (e.target.tagName === 'IMG' && e.target.hasAttribute('data-path')) {
+                    const path = e.target.getAttribute('data-path');
+                    const display = document.getElementById('imagePathDisplay');
+                    display.textContent = path;
+                    display.style.display = 'block';
+                    setTimeout(() => {
+                        display.style.display = 'none';
+                    }, 3000);
+                }
+            });
+        }
+        
+        // Logout Function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('You have been logged out');
+                // Redirect to login page
+                // window.location.href = 'login.html';
+            }
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            showAppPage();
+            updateTransactionList();
+            checkTheme();
+            setupImagePathDisplay();
+            
+            // Initialize with 3 notifications
+            updateNotificationBadge(3);
+            
+            // Set up event listeners
+            document.getElementById('addMoneyBtn').addEventListener('click', function() {
+                openModal('addMoneyModal');
+            });
+            
+            // Theme toggle button
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+            
+            // Make any payment button click open payment modal
+            document.querySelectorAll('.quick-action').forEach(action => {
+                if (action.getAttribute('href') === '#') {
+                    action.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        openModal('paymentModal');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

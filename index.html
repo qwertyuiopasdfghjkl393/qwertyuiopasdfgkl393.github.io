@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetcoin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #007bff, #00bfff);
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 20px;
+            animation: slideIn 1s ease-in-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .illustration {
+            width: 100%;
+            max-width: 250px;
+            margin-bottom: 20px;
+            animation: zoomIn 1s ease-in-out;
+        }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .description {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #007bff;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        .details {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            animation: fadeIn 2s ease-in-out;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .next {
+            background: #007bff;
+            color: white;
+        }
+        .next:hover {
+            background: #0056b3;
+        }
+        .skip {
+            background: #f8f9fa;
+            color: #333;
+        }
+        .skip:hover {
+            background: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo">Fetcoin</div>
+        <img src="wallet.png" class="illustration" alt="Wallet Illustration">
+        <div class="description">Buy Cheap & Invest</div>
+        <div class="details">
+            Buy your cheap data, airtime, etc.<br><br>
+            <strong>Referral Bonus:</strong><br>
+            If you refer one person before using the app, you will receive a bonus of <strong>₦200</strong>. <br><br>
+            Your referral code will be sent to your Gmail. Make sure to refer one person before setting up your account.<br><br>
+            <strong>Thanks for using Fetcoin!</strong>
+        </div>
+        <button class="btn next" onclick="nextPage()">Next</button>
+        <button class="btn skip" onclick="skipPage()">Skip</button>
+    </div>
+
+    <script>
+        function nextPage() {
+            // Redirect to next.html
+            window.location.href = "next.html";
+        }
+        function skipPage() {
+            alert("Skipping to home page...");
+        }
+    </script>
+
+</body>
+</html>

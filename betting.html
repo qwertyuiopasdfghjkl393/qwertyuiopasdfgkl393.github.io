@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetPro - Live Sports Betting</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Light theme */
+            --primary-light: #1a2e35;
+            --secondary-light: #2a9d8f;
+            --accent-light: #e9c46a;
+            --danger-light: #e76f51;
+            --light-light: #f8f9fa;
+            --dark-light: #212529;
+            --gray-light: #6c757d;
+            --border-light: #dee2e6;
+            --card-bg-light: #ffffff;
+            --body-bg-light: #f5f7fa;
+            --text-light: #212529;
+            
+            /* Dark theme */
+            --primary-dark: #0d1a1f;
+            --secondary-dark: #1e8175;
+            --accent-dark: #d9b758;
+            --danger-dark: #d45a3d;
+            --light-dark: #2d3748;
+            --dark-dark: #e2e8f0;
+            --gray-dark: #a0aec0;
+            --border-dark: #4a5568;
+            --card-bg-dark: #1a202c;
+            --body-bg-dark: #121721;
+            --text-dark: #e2e8f0;
+            
+            /* Current theme vars */
+            --primary: var(--primary-light);
+            --secondary: var(--secondary-light);
+            --accent: var(--accent-light);
+            --danger: var(--danger-light);
+            --light: var(--light-light);
+            --dark: var(--dark-light);
+            --gray: var(--gray-light);
+            --border: var(--border-light);
+            --card-bg: var(--card-bg-light);
+            --body-bg: var(--body-bg-light);
+            --text: var(--text-light);
+        }
+
+        .dark-mode {
+            --primary: var(--primary-dark);
+            --secondary: var(--secondary-dark);
+            --accent: var(--accent-dark);
+            --danger: var(--danger-dark);
+            --light: var(--light-dark);
+            --dark: var(--dark-dark);
+            --gray: var(--gray-dark);
+            --border: var(--border-dark);
+            --card-bg: var(--card-bg-dark);
+            --body-bg: var(--body-bg-dark);
+            --text: var(--text-dark);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .balance {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .balance span {
+            color: var(--accent);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 70px;
+            z-index: 99;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .nav-links li.active, .nav-links li:hover {
+            color: var(--secondary);
+            border-bottom-color: var(--secondary);
+        }
+
+        /* Live indicator */
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        /* Sports Events */
+        .sports-section {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .sports-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .sport-tab {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: var(--light);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .sport-tab.active, .sport-tab:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        /* Live event card */
+        .event-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            background-color: var(--card-bg);
+        }
+
+        .event-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-card.live {
+            border-left: 4px solid var(--danger);
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .event-teams {
+            flex: 1;
+        }
+
+        .team {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .team-logo {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            background-color: var(--light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .team-name {
+            font-weight: 500;
+        }
+
+        .event-time {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .event-score {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        .event-odds {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .odd-box {
+            background-color: var(--light);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .odd-box:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .odd-box.selected {
+            background-color: var(--secondary);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 3px 10px rgba(42, 157, 143, 0.3);
+        }
+
+        .odd-label {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+
+        .odd-value {
+            font-weight: 600;
+        }
+
+        /* Live odds animation */
+        .odd-value.changed {
+            animation: blink 1s;
+        }
+
+        @keyframes blink {
+            0% { color: inherit; }
+            50% { color: var(--danger); }
+            100% { color: inherit; }
+        }
+
+        /* Bet Slip */
+        .bet-slip {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            position: sticky;
+            top: 130px;
+            height: fit-content;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .slip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .slip-title {
+            font-weight: 600;
+        }
+
+        .clear-bets {
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .slip-content {
+            min-height: 200px;
+            margin-bottom: 20px;
+        }
+
+        .no-bets {
+            text-align: center;
+            color: var(--gray);
+            padding: 30px 0;
+        }
+
+        .bet-item {
+            border-bottom: 1px solid var(--border);
+            padding: 10px 0;
+        }
+
+        .bet-teams {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .bet-selection {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .bet-remove {
+            color: var(--danger);
+            cursor: pointer;
+        }
+
+        .stake-input {
+            margin: 20px 0;
+        }
+
+        .stake-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .stake-amount {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: var(--card-bg);
+            color: var(--text);
+        }
+
+        .stake-amount:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .quick-stakes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .quick-stake {
+            padding: 8px;
+            background-color: var(--light);
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .quick-stake:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .potential-win {
+            background-color: var(--light);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .win-label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .win-amount {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--secondary);
+        }
+
+        .place-bet {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .place-bet:hover {
+            background-color: #238f83;
+            transform: translateY(-2px);
+        }
+
+        .place-bet:disabled {
+            background-color: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            border: none;
+        }
+
+        .modal-btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .modal-btn-secondary {
+            background-color: var(--light);
+            color: var(--text);
+        }
+
+        /* Payment page specific */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .payment-method {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method.selected {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px rgba(42, 157, 143, 0.3);
+        }
+
+        .payment-method i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .payment-form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            background-color: var(--card-bg);
+            color: var(--text);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .bet-slip {
+                position: static;
+                margin-top: 20px;
+                max-height: none;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+
+            .event-odds {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">Bet<span>Pro</span></div>
+            <div class="user-actions">
+                <div class="balance">Balance: <span>₦0.00</span></div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="user-profile">
+                    <div class="avatar">JD</div>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul class="nav-links">
+                <li class="active">Sports</li>
+                <li id="liveTab">Live</li>
+                <li>Casino</li>
+                <li>Virtual</li>
+                <li>Promotions</li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container main-content">
+        <div class="sports-section">
+            <div class="section-header">
+                <div class="section-title" id="sectionTitle">Today's Matches</div>
+                <div class="live-indicator">
+                    <span class="live-dot"></span> Live: <span id="liveCount">12</span>
+                </div>
+            </div>
+
+            <div class="sports-tabs">
+                <div class="sport-tab active" data-sport="football">Football</div>
+                <div class="sport-tab" data-sport="basketball">Basketball</div>
+                <div class="sport-tab" data-sport="tennis">Tennis</div>
+                <div class="sport-tab" data-sport="cricket">Cricket</div>
+                <div class="sport-tab" data-sport="esports">eSports</div>
+            </div>
+
+            <div id="eventsContainer">
+                <!-- Events will be loaded here -->
+                <div class="event-card live" data-event-id="101">
+                    <div class="event-header">
+                        <div class="event-teams">
+                            <div class="team">
+                                <div class="team-logo">MUN</div>
+                                <div class="team-name">Manchester United</div>
+                            </div>
+                            <div class="team">
+                                <div class="team-logo">ARS</div>
+                                <div class="team-name">Arsenal</div>
+                            </div>
+                        </div>
+                        <div class="event-time">
+                            <div class="event-score">2 - 1</div>
+                            <div>65'</div>
+                        </div>
+                    </div>
+
+                    <div class="event-odds">
+                        <div class="odd-box" data-bet-type="home">
+                            <div class="odd-label">1</div>
+                            <div class="odd-value">3.75</div>
+                        </div>
+                        <div class="odd-box" data-bet-type="draw">
+                            <div class="odd-label">X</div>
+                            <div class="odd-value">3.20</div>
+                        </div>
+                        <div class="odd-box" data-bet-type="away">
+                            <div class="odd-label">2</div>
+                            <div class="odd-value">2.10</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card" data-event-id="102">
+                    <div class="event-header">
+                        <div class="event-teams">
+                            <div class="team">
+                                <div class="team-logo">LIV</div>
+                                <div class="team-name">Liverpool</div>
+                            </div>
+                            <div class="team">
+                                <div class="team-logo">MCI</div>
+                                <div class="team-name">Manchester City</div>
+                            </div>
+                        </div>
+                        <div class="event-time">Today, 20:00</div>
+                    </div>
+
+                    <div class="event-odds">
+                        <div class="odd-box" data-bet-type="home">
+                            <div class="odd-label">1</div>
+                            <div class="odd-value">2.80</div>
+                        </div>
+                        <div class="odd-box" data-bet-type="draw">
+                            <div class="odd-label">X</div>
+                            <div class="odd-value">3.40</div>
+                        </div>
+                        <div class="odd-box" data-bet-type="away">
+                            <div class="odd-label">2</div>
+                            <div class="odd-value">2.50</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card live" data-event-id="103">
+                    <div class="event-header">
+                        <div class="event-teams">
+                            <div class="team">
+                                <div class="team-logo">PSG</div>
+                                <div class="team-name">Paris SG</div>
+                            </div>
+                            <div class="team">
+                                <div class="team-logo">BAY</div>
+                                <div class="team-name">Bayern Munich</div>
+                            </div>
+                        </div>
+                        <div class="event-time">
+                            <div class="event-score">0 - 0</div>
+                            <div>23'</div>
+                        </div>
+                    </div>
+
+                    <div class="event-odds">
+                        <div class="odd-box" data-bet-type="home">
+                            <div class="odd-label">1</div>
+                            <div class="odd-value">2.30</div>
+                        </div>
+                        <div class="odd-box" data-bet-type="draw">
+                            <div class="odd-label">X</div>
+                            <div class="odd-value">3.25</div>
+                        </div>
+                        <div class="odd-box" data-bet-type="away">
+                            <div class="odd-label">2</div>
+                            <div class="odd-value">3.10</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bet-slip">
+            <div class="slip-header">
+                <div class="slip-title">Bet Slip</div>
+                <div class="clear-bets" id="clearBets">Clear all</div>
+            </div>
+
+            <div class="slip-content" id="slipContent">
+                <div class="no-bets">No bets added</div>
+            </div>
+
+            <div class="stake-input">
+                <label class="stake-label">Stake (₦)</label>
+                <input type="number" class="stake-amount" id="stakeAmount" placeholder="Enter amount" min="100" step="100">
+                <div class="quick-stakes">
+                    <div class="quick-stake" data-amount="100">₦100</div>
+                    <div class="quick-stake" data-amount="500">₦500</div>
+                    <div class="quick-stake" data-amount="1000">₦1,000</div>
+                </div>
+            </div>
+
+            <div class="potential-win">
+                <div class="win-label">Potential Win</div>
+                <div class="win-amount" id="winAmount">₦0.00</div>
+            </div>
+
+            <button class="place-bet" id="placeBet" disabled>Place Bet</button>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Deposit Funds</div>
+                <div class="close-modal" id="closeModal">&times;</div>
+            </div>
+            <div class="modal-body">
+                <div class="payment-methods">
+                    <div class="payment-method selected" data-method="card">
+                        <i class="fas fa-credit-card"></i>
+                        <div>Card</div>
+                    </div>
+                    <div class="payment-method" data-method="bank">
+                        <i class="fas fa-university"></i>
+                        <div>Bank Transfer</div>
+                    </div>
+                    <div class="payment-method" data-method="ussd">
+                        <i class="fas fa-mobile-alt"></i>
+                        <div>USSD</div>
+                    </div>
+                    <div class="payment-method" data-method="crypto">
+                        <i class="fab fa-bitcoin"></i>
+                        <div>Crypto</div>
+                    </div>
+                </div>
+
+                <div class="payment-form">
+                    <div class="form-group">
+                        <label class="form-label">Amount (₦)</label>
+                        <input type="number" class="form-control" id="depositAmount" placeholder="Enter amount" min="100">
+                    </div>
+                    <div class="form-group" id="cardDetails">
+                        <label class="form-label">Card Number</label>
+                        <input type="text" class="form-control" placeholder="1234 5678 9012 3456">
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                            <div>
+                                <label class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" placeholder="MM/YY">
+                            </div>
+                            <div>
+                                <label class="form-label">CVV</label>
+                                <input type="text" class="form-control" placeholder="123">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" id="cancelPayment">Cancel</button>
+                <button class="modal-btn modal-btn-primary" id="confirmPayment">Deposit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bet Confirmation Modal -->
+    <div class="modal" id="betModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Confirm Bet</div>
+                <div class="close-modal" id="closeBetModal">&times;</div>
+            </div>
+            <div class="modal-body" id="betModalBody">
+                <!-- Bet details will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" id="cancelBet">Cancel</button>
+                <button class="modal-btn modal-btn-primary" id="confirmBet">Place Bet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Success Page (would be separate HTML in real app) -->
+    <div id="paymentPage" style="display: none;">
+        <div class="container" style="max-width: 600px; margin: 50px auto; text-align: center;">
+            <div style="font-size: 3rem; color: var(--secondary); margin-bottom: 20px;">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1 style="margin-bottom: 20px;">Payment Successful!</h1>
+            <p style="margin-bottom: 30px; font-size: 1.1rem;">Your deposit of <strong>₦5,000.00</strong> has been processed successfully. Your account balance has been updated.</p>
+            <button id="backToBetting" style="padding: 12px 30px; background-color: var(--secondary); color: white; border: none; border-radius: 5px; font-weight: 600; cursor: pointer;">
+                Back to Betting
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const icon = themeToggle.querySelector('i');
+            
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+
+            // Sport tab switching
+            const sportTabs = document.querySelectorAll('.sport-tab');
+            sportTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    sportTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // In a real app, this would load events for the selected sport
+                    const sport = this.dataset.sport;
+                    console.log(`Loading ${sport} events...`);
+                });
+            });
+
+            // Live tab
+            const liveTab = document.getElementById('liveTab');
+            const sectionTitle = document.getElementById('sectionTitle');
+            
+            liveTab.addEventListener('click', function() {
+                // Highlight live tab
+                document.querySelectorAll('.nav-links li').forEach(li => {
+                    li.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show only live events
+                sectionTitle.textContent = 'Live Matches';
+                document.querySelectorAll('.event-card').forEach(card => {
+                    if (!card.classList.contains('live')) {
+                        card.style.display = 'none';
+                    } else {
+                        card.style.display = 'block';
+                    }
+                });
+            });
+
+            // Bet slip functionality
+            const slipContent = document.getElementById('slipContent');
+            const clearBets = document.getElementById('clearBets');
+            const stakeAmount = document.getElementById('stakeAmount');
+            const winAmount = document.getElementById('winAmount');
+            const placeBet = document.getElementById('placeBet');
+            let bets = [];
+            
+            // Odd selection
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.odd-box')) {
+                    const oddBox = e.target.closest('.odd-box');
+                    const eventCard = oddBox.closest('.event-card');
+                    
+                    // Deselect other odds in the same event
+                    eventCard.querySelectorAll('.odd-box').forEach(box => {
+                        box.classList.remove('selected');
+                    });
+                    
+                    // Select this odd
+                    oddBox.classList.add('selected');
+                    
+                    // Add to bet slip
+                    addToBetSlip(eventCard, oddBox);
+                }
+            });
+            
+            function addToBetSlip(eventCard, oddBox) {
+                const eventId = eventCard.dataset.eventId;
+                const teams = eventCard.querySelector('.event-teams').textContent.trim();
+                const selection = oddBox.querySelector('.odd-label').textContent;
+                const oddValue = oddBox.querySelector('.odd-value').textContent;
+                const betType = oddBox.dataset.betType;
+                
+                // Check if this bet already exists
+                const existingBetIndex = bets.findIndex(bet => 
+                    bet.eventId === eventId && bet.betType === betType
+                );
+                
+                if (existingBetIndex !== -1) {
+                    // Remove existing bet
+                    bets.splice(existingBetIndex, 1);
+                    
+                    // Remove from UI
+                    const betItems = slipContent.querySelectorAll('.bet-item');
+                    betItems[existingBetIndex].remove();
+                } else {
+                    // Add new bet
+                    const newBet = {
+                        eventId,
+                        teams,
+                        selection,
+                        oddValue: parseFloat(oddValue),
+                        betType
+                    };
+                    
+                    bets.push(newBet);
+                    
+                    // Add to UI
+                    if (slipContent.querySelector('.no-bets')) {
+                        slipContent.innerHTML = '';
+                    }
+                    
+                    const betItem = document.createElement('div');
+                    betItem.className = 'bet-item';
+                    betItem.dataset.eventId = eventId;
+                    betItem.dataset.betType = betType;
+                    betItem.innerHTML = `
+                        <div class="bet-teams">${teams}</div>
+                        <div class="bet-selection">
+                            <span>${selection} @${oddValue}</span>
+                            <span class="bet-remove"><i class="fas fa-times"></i></span>
+                        </div>
+                    `;
+                    
+                    slipContent.appendChild(betItem);
+                    
+                    // Add click handler for remove button
+                    betItem.querySelector('.bet-remove').addEventListener('click', function() {
+                        removeBet(eventId, betType);
+                    });
+                }
+                
+                // Update UI
+                updateBetSlipUI();
+            }
+            
+            function removeBet(eventId, betType) {
+                // Remove from bets array
+                bets = bets.filter(bet => !(bet.eventId === eventId && bet.bet.type === betType));
+                
+                // Remove from UI
+                const betItem = slipContent.querySelector(`.bet-item[data-event-id="${eventId}"][data-bet-type="${betType}"]`);
+                if (betItem) {
+                    betItem.remove();
+                }
+                
+                // Deselect odd box
+                const eventCard = document.querySelector(`.event-card[data-event-id="${eventId}"]`);
+                if (eventCard) {
+                    eventCard.querySelector(`.odd-box[data-bet-type="${betType}"]`).classList.remove('selected');
+                }
+                
+                // Update UI
+                updateBetSlipUI();
+            }
+            
+            function updateBetSlipUI() {
+                if (bets.length === 0) {
+                    slipContent.innerHTML = '<div class="no-bets">No bets added</div>';
+                    placeBet.disabled = true;
+                    winAmount.textContent = '₦0.00';
+                } else {
+                    placeBet.disabled = false;
+                    calculatePotentialWin();
+                }
+            }
+            
+            // Clear all bets
+            clearBets.addEventListener('click', function() {
+                bets = [];
+                slipContent.innerHTML = '<div class="no-bets">No bets added</div>';
+                
+                // Deselect all odd boxes
+                document.querySelectorAll('.odd-box').forEach(box => {
+                    box.classList.remove('selected');
+                });
+                
+                // Reset stake
+                stakeAmount.value = '';
+                winAmount.textContent = '₦0.00';
+                placeBet.disabled = true;
+            });
+            
+            // Quick stake buttons
+            document.querySelectorAll('.quick-stake').forEach(button => {
+                button.addEventListener('click', function() {
+                    stakeAmount.value = this.dataset.amount;
+                    calculatePotentialWin();
+                });
+            });
+            
+            // Stake amount calculation
+            stakeAmount.addEventListener('input', function() {
+                calculatePotentialWin();
+            });
+            
+            function calculatePotentialWin() {
+                if (bets.length === 0 || !stakeAmount.value) {
+                    winAmount.textContent = '₦0.00';
+                    return;
+                }
+                
+                const stake = parseFloat(stakeAmount.value) || 0;
+                
+                // For multiple bets, calculate as accumulator
+                let totalOdds = 1;
+                bets.forEach(bet => {
+                    totalOdds *= bet.oddValue;
+                });
+                
+                const potentialWin = stake * totalOdds;
+                winAmount.textContent = `₦${potentialWin.toFixed(2)}`;
+            }
+            
+            // Place bet button
+            placeBet.addEventListener('click', function() {
+                if (bets.length === 0 || !stakeAmount.value) return;
+                
+                const stake = parseFloat(stakeAmount.value);
+                
+                // Check if user has enough balance
+                const balanceText = document.querySelector('.balance span').textContent;
+                const balance = parseFloat(balanceText.replace(/[^\d.]/g, ''));
+                
+                if (stake > balance) {
+                    showPaymentModal();
+                    return;
+                }
+                
+                // Show bet confirmation
+                showBetConfirmation(stake);
+            });
+            
+            // Payment modal
+            const paymentModal = document.getElementById('paymentModal');
+            const closeModal = document.getElementById('closeModal');
+            const cancelPayment = document.getElementById('cancelPayment');
+            const confirmPayment = document.getElementById('confirmPayment');
+            
+            function showPaymentModal() {
+                paymentModal.style.display = 'flex';
+            }
+            
+            function hidePaymentModal() {
+                paymentModal.style.display = 'none';
+            }
+            
+            closeModal.addEventListener('click', hidePaymentModal);
+            cancelPayment.addEventListener('click', hidePaymentModal);
+            
+            confirmPayment.addEventListener('click', function() {
+                const amount = parseFloat(document.getElementById('depositAmount').value);
+                
+                if (isNaN(amount) || amount < 100) {
+                    alert('Please enter a valid amount (minimum ₦100)');
+                    return;
+                }
+                
+                // In a real app, this would process payment
+                console.log(`Processing payment of ₦${amount}`);
+                
+                // Simulate payment success
+                setTimeout(() => {
+                    hidePaymentModal();
+                    showPaymentSuccessPage(amount);
+                }, 1500);
+            });
+            
+            // Payment method selection
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.addEventListener('click', function() {
+                    document.querySelectorAll('.payment-method').forEach(m => {
+                        m.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    // Show relevant form (simplified for demo)
+                    const methodType = this.dataset.method;
+                    console.log(`Selected payment method: ${methodType}`);
+                });
+            });
+            
+            // Bet confirmation modal
+            const betModal = document.getElementById('betModal');
+            const closeBetModal = document.getElementById('closeBetModal');
+            const cancelBet = document.getElementById('cancelBet');
+            const confirmBet = document.getElementById('confirmBet');
+            
+            function showBetConfirmation(stake) {
+                const betModalBody = document.getElementById('betModalBody');
+                
+                // Calculate total odds
+                let totalOdds = 1;
+                bets.forEach(bet => {
+                    totalOdds *= bet.oddValue;
+                });
+                
+                // Create bet summary
+                let betSummary = `
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <div>Stake:</div>
+                            <div>₦${stake.toFixed(2)}</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <div>Total Odds:</div>
+                            <div>${totalOdds.toFixed(2)}</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-weight: 600; font-size: 1.1rem;">
+                            <div>Potential Win:</div>
+                            <div style="color: var(--secondary);">₦${(stake * totalOdds).toFixed(2)}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="border-top: 1px solid var(--border); padding-top: 15px; margin-bottom: 20px;">
+                        <div style="font-weight: 600; margin-bottom: 10px;">Your Bets:</div>
+                `;
+                
+                bets.forEach(bet => {
+                    betSummary += `
+                        <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+                            <div style="font-weight: 500;">${bet.teams}</div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--gray);">
+                                <div>${bet.selection} @${bet.oddValue}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                betSummary += `</div>`;
+                
+                betModalBody.innerHTML = betSummary;
+                betModal.style.display = 'flex';
+            }
+            
+            function hideBetModal() {
+                betModal.style.display = 'none';
+            }
+            
+            closeBetModal.addEventListener('click', hideBetModal);
+            cancelBet.addEventListener('click', hideBetModal);
+            
+            confirmBet.addEventListener('click', function() {
+                const stake = parseFloat(stakeAmount.value);
+                
+                // Deduct from balance
+                const balanceElement = document.querySelector('.balance span');
+                let balance = parseFloat(balanceElement.textContent.replace(/[^\d.]/g, ''));
+                balance -= stake;
+                balanceElement.textContent = `₦${balance.toFixed(2)}`;
+                
+                // In a real app, this would send the bet to the server
+                console.log('Placing bet:', { stake, bets });
+                
+                // Show success message
+                alert('Bet placed successfully! Good luck!');
+                
+                // Reset bet slip
+                clearBets.click();
+                hideBetModal();
+            });
+            
+            // Payment success page
+            const paymentPage = document.getElementById('paymentPage');
+            const backToBetting = document.getElementById('backToBetting');
+            
+            function showPaymentSuccessPage(amount) {
+                // Hide main content and show payment page
+                document.querySelector('.main-content').style.display = 'none';
+                document.querySelector('nav').style.display = 'none';
+                paymentPage.style.display = 'block';
+                
+                // Update balance
+                const balanceElement = document.querySelector('.balance span');
+                let balance = parseFloat(balanceElement.textContent.replace(/[^\d.]/g, ''));
+                balance += amount;
+                balanceElement.textContent = `₦${balance.toFixed(2)}`;
+            }
+            
+            backToBetting.addEventListener('click', function() {
+                // Show main content and hide payment page
+                document.querySelector('.main-content').style.display = 'grid';
+                document.querySelector('nav').style.display = 'block';
+                paymentPage.style.display = 'none';
+            });
+            
+            // Simulate live odds changes (demo only)
+            setInterval(() => {
+                document.querySelectorAll('.event-card.live .odd-value').forEach(odd => {
+                    if (Math.random() > 0.7) { // 30% chance of change
+                        const currentValue = parseFloat(odd.textContent);
+                        const change = (Math.random() * 0.3) - 0.15; // -0.15 to +0.15
+                        const newValue = Math.max(1.1, Math.min(10, currentValue + change));
+                        odd.textContent = newValue.toFixed(2);
+                        odd.classList.add('changed');
+                        
+                        setTimeout(() => {
+                            odd.classList.remove('changed');
+                        }, 1000);
+                        
+                        // Update bet slip if this odd is selected
+                        const oddBox = odd.closest('.odd-box');
+                        if (oddBox.classList.contains('selected')) {
+                            const eventCard = oddBox.closest('.event-card');
+                            const betType = oddBox.dataset.betType;
+                            
+                            // Find and update the bet
+                            const betIndex = bets.findIndex(bet => 
+                                bet.eventId === eventCard.dataset.eventId && bet.betType === betType
+                            );
+                            
+                            if (betIndex !== -1) {
+                                bets[betIndex].oddValue = newValue;
+                                calculatePotentialWin();
+                            }
+                        }
+                    }
+                });
+                
+                // Update live scores occasionally
+                if (Math.random() > 0.8) { // 20% chance
+                    document.querySelectorAll('.event-card.live .event-score').forEach(score => {
+                        const currentScore = score.textContent.split('-').map(s => parseInt(s.trim()));
+                        if (Math.random() > 0.5) { // 50% chance to update home score
+                            currentScore[0] += Math.floor(Math.random() * 2);
+                        } else { // 50% chance to update away score
+                            currentScore[1] += Math.floor(Math.random() * 2);
+                        }
+                        score.textContent = `${currentScore[0]} - ${currentScore[1]}`;
+                    });
+                }
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

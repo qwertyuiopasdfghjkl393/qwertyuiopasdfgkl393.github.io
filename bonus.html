@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Social Bonus | MyWallet</title>
+    <style>
+        :root {
+            --primary: #6C5CE7;
+            --primary-light: #A29BFE;
+            --primary-dark: #5649C0;
+            --success: #00B894;
+            --warning: #FDCB6E;
+            --danger: #FF7675;
+            --dark: #2D3436;
+            --light: #F5F6FA;
+            --text: #2D3436;
+            --text-light: #F5F6FA;
+            --text-muted: #636E72;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .balance-card {
+            background: white;
+            margin: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .balance-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+        
+        .balance-amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .bonus-section {
+            padding: 0 20px 20px;
+        }
+        
+        .bonus-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark);
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .bonus-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .bonus-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+            transition: all 0.3s;
+        }
+        
+        .bonus-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.1);
+        }
+        
+        .bonus-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(108, 92, 231, 0.1);
+            color: var(--primary);
+            font-size: 20px;
+        }
+        
+        .bonus-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .bonus-amount {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 10px;
+        }
+        
+        .claim-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .claim-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .claim-btn.claimed {
+            background: var(--success);
+            cursor: default;
+        }
+        
+        .claim-btn.claimed::after {
+            content: " ✓";
+        }
+        
+        .total-bonus {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        
+        .total-amount {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Claim Your Social Bonus</h1>
+            <p>Follow us on social media to earn rewards</p>
+        </div>
+        
+        <div class="balance-card">
+            <div class="balance-label">Available Balance</div>
+            <div class="balance-amount" id="balance">₦0.00</div>
+        </div>
+        
+        <div class="bonus-section">
+            <h2 class="bonus-title">Available Bonuses</h2>
+            
+            <div class="bonus-grid">
+                <div class="bonus-card">
+                    <div class="bonus-icon">📱</div>
+                    <div class="bonus-name">Follow on WhatsApp</div>
+                    <div class="bonus-amount">+₦100</div>
+                    <button class="claim-btn" data-amount="100" data-platform="whatsapp">Claim Bonus</button>
+                </div>
+                
+                <div class="bonus-card">
+                    <div class="bonus-icon">💬</div>
+                    <div class="bonus-name">Follow on Telegram</div>
+                    <div class="bonus-amount">+₦100</div>
+                    <button class="claim-btn" data-amount="100" data-platform="telegram">Claim Bonus</button>
+                </div>
+                
+                <div class="bonus-card">
+                    <div class="bonus-icon">👍</div>
+                    <div class="bonus-name">Like on Facebook</div>
+                    <div class="bonus-amount">+₦150</div>
+                    <button class="claim-btn" data-amount="150" data-platform="facebook">Claim Bonus</button>
+                </div>
+                
+                <div class="bonus-card">
+                    <div class="bonus-icon">📸</div>
+                    <div class="bonus-name">Follow on Instagram</div>
+                    <div class="bonus-amount">+₦150</div>
+                    <button class="claim-btn" data-amount="150" data-platform="instagram">Claim Bonus</button>
+                </div>
+                
+                <div class="bonus-card">
+                    <div class="bonus-icon">🐦</div>
+                    <div class="bonus-name">Follow on Twitter</div>
+                    <div class="bonus-amount">+₦100</div>
+                    <button class="claim-btn" data-amount="100" data-platform="twitter">Claim Bonus</button>
+                </div>
+                
+                <div class="bonus-card">
+                    <div class="bonus-icon">🎁</div>
+                    <div class="bonus-name">Complete All</div>
+                    <div class="bonus-amount">+₦200</div>
+                    <button class="claim-btn" id="completeBonus" data-amount="200">Claim Bonus</button>
+                </div>
+            </div>
+            
+            <div class="total-bonus">
+                Total bonus earned: <span class="total-amount" id="totalBonus">₦0</span>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Follow all platforms to unlock the complete bonus</p>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        Bonus claimed successfully!
+    </div>
+
+    <script>
+        // Initialize balance and bonuses
+        let balance = 0;
+        let totalBonus = 0;
+        const claimedPlatforms = {
+            whatsapp: false,
+            telegram: false,
+            facebook: false,
+            instagram: false,
+            twitter: false
+        };
+        
+        // DOM elements
+        const balanceElement = document.getElementById('balance');
+        const totalBonusElement = document.getElementById('totalBonus');
+        const notification = document.getElementById('notification');
+        const completeBonusBtn = document.getElementById('completeBonus');
+        
+        // Update balance display
+        function updateBalance() {
+            balanceElement.textContent = `₦${balance.toFixed(2)}`;
+            totalBonusElement.textContent = `₦${totalBonus}`;
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Check if all platforms are claimed
+        function checkAllClaimed() {
+            return Object.values(claimedPlatforms).every(val => val);
+        }
+        
+        // Update complete bonus button state
+        function updateCompleteBonus() {
+            if (checkAllClaimed() && !completeBonusBtn.classList.contains('claimed')) {
+                completeBonusBtn.disabled = false;
+            } else {
+                completeBonusBtn.disabled = true;
+            }
+        }
+        
+        // Handle bonus claim
+        function claimBonus(button) {
+            const amount = parseFloat(button.getAttribute('data-amount'));
+            const platform = button.getAttribute('data-platform');
+            
+            // If it's a platform bonus
+            if (platform) {
+                if (claimedPlatforms[platform]) return;
+                
+                claimedPlatforms[platform] = true;
+                button.classList.add('claimed');
+                button.disabled = true;
+                
+                balance += amount;
+                totalBonus += amount;
+                updateBalance();
+                showNotification(`₦${amount} bonus claimed for ${platform}!`);
+                
+                updateCompleteBonus();
+            } 
+            // If it's the complete bonus
+            else if (button.id === 'completeBonus') {
+                if (checkAllClaimed() && !button.classList.contains('claimed')) {
+                    button.classList.add('claimed');
+                    button.disabled = true;
+                    
+                    balance += amount;
+                    totalBonus += amount;
+                    updateBalance();
+                    showNotification(`₦${amount} complete bonus claimed!`);
+                }
+            }
+        }
+        
+        // Event listeners for all claim buttons
+        document.querySelectorAll('.claim-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                claimBonus(this);
+            });
+            
+            // Disable complete bonus button initially
+            if (button.id === 'completeBonus') {
+                button.disabled = true;
+            }
+        });
+        
+        // Initialize
+        updateBalance();
+    </script>
+</body>
+</html>

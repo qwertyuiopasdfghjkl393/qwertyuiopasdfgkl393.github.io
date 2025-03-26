@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fund Your Fetcoin Wallet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C4DF6;
+            --secondary: #FF9E0D;
+            --success: #28A745;
+            --warning: #FFC107;
+            --danger: #DC3545;
+            
+            /* Light Mode Defaults */
+            --bg-color: #F8F9FA;
+            --text-color: #333;
+            --card-bg: white;
+            --card-border: #eee;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --section-bg: #F9F9F9;
+            --note-bg: #FFF8E6;
+            --highlight-bg: rgba(255, 255, 255, 0.15);
+        }
+
+        .dark-mode {
+            --bg-color: #121212;
+            --text-color: #F5F5F5;
+            --card-bg: #1E1E1E;
+            --card-border: #333;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --section-bg: #252525;
+            --note-bg: #332900;
+            --highlight-bg: rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            position: relative;
+            margin-top: 30px;
+            border: 1px solid var(--card-border);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1 i {
+            color: var(--primary);
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 5px;
+            margin-left: auto;
+            margin-right: 15px;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, var(--primary), #8A6DF5);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(108, 77, 246, 0.2);
+        }
+
+        .info-card h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card p {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .highlight-box {
+            background: var(--highlight-bg);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .account-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            border: 1px solid var(--card-border);
+            transition: transform 0.2s;
+        }
+
+        .account-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .account-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .bank-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            background: rgba(108, 77, 246, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .account-number-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(108, 77, 246, 0.05);
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px dashed rgba(108, 77, 246, 0.3);
+            margin-top: 10px;
+        }
+
+        .account-number {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-color);
+            font-family: 'Courier New', monospace;
+        }
+
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #5B3DDE;
+            transform: scale(1.02);
+        }
+
+        .instructions {
+            background: var(--section-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+            border: 1px solid var(--card-border);
+        }
+
+        .instructions h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step {
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            font-size: 14px;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        .note {
+            background: var(--note-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid var(--warning);
+            font-size: 13px;
+        }
+
+        .note strong {
+            color: var(--text-color);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 180px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-button" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>
+                <i class="fas fa-wallet"></i> Fund Your Fetcoin Wallet
+            </h1>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+
+        <div class="info-card">
+            <h2><i class="fas fa-lightbulb"></i> Deposit Instructions</h2>
+            <p>Transfer to any account below to fund your Fetcoin wallet instantly</p>
+            
+            <div class="highlight-box">
+                <p><i class="fas fa-exclamation-circle"></i> <strong>Minimum deposit:</strong> ₦1,000 you will just deposit the money once and start using app for free</p>
+                <p><i class="fas fa-clock"></i> <strong>Processing time:</strong> Instant (within minutes)</p>
+            </div>
+        </div>
+
+        <div class="account-card">
+            <div class="account-header">
+                <div class="account-title">Account Number</div>
+                <div class="bank-name">PalmPay Bank</div>
+            </div>
+            <div class="account-number-container">
+                <span class="account-number">6692121950</span>
+                <button class="copy-btn" onclick="copyToClipboard('6692121950', this)">
+                    <i class="far fa-copy"></i> Copy
+                </button>
+            </div>
+        </div>
+
+        <div class="account-card">
+            <div class="account-header">
+                <div class="account-title">Account Number</div>
+                <div class="bank-name">Safe Haven MFB</div>
+            </div>
+            <div class="account-number-container">
+                <span class="account-number">6026994459</span>
+                <button class="copy-btn" onclick="copyToClipboard('6026994459', this)">
+                    <i class="far fa-copy"></i> Copy
+                </button>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> How to Deposit</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    Copy the account number for your preferred bank above
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    Transfer <strong>at least ₦1,000</strong> from your bank app or USSD
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    Your Fetcoin wallet will be credited automatically within minutes
+                </div>
+            </div>
+
+            <div class="note">
+                <p><strong>Note:</strong> Use your registered name as the transfer reference. Transfers from third-party accounts may require manual verification.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Need help? <a href="#">Contact Support</a></p>
+            <p>Fetcoin &copy; 2023. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        // Check for saved theme preference or use system preference
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
+            document.body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+        
+        // Toggle theme
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Change button temporarily
+                const originalHtml = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                button.style.background = 'var(--success)';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalHtml;
+                    button.style.background = 'var(--primary)';
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        // Add tooltip functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

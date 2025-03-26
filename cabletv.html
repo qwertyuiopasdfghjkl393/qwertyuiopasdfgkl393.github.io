@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TV Subscription Service</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #007bff, #6610f2);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        select:focus, input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background: #0069d9;
+        }
+        .plan-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .plan-option {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .plan-option.selected {
+            border-color: #007bff;
+            background-color: #f0f7ff;
+        }
+        .plan-option .price {
+            font-weight: 600;
+            color: #007bff;
+            margin-top: 5px;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            .plan-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TV Subscription</h1>
+        
+        <form id="subscriptionForm">
+            <div class="form-group">
+                <label for="provider">Select TV Provider</label>
+                <select id="provider" required>
+                    <option value="">-- Select Provider --</option>
+                    <option value="dstv">DSTV</option>
+                    <option value="gotv">GOtv</option>
+                    <option value="startimes">StarTimes</option>
+                </select>
+                <div class="error" id="providerError">Please select a provider</div>
+            </div>
+
+            <div class="form-group">
+                <label for="iucNumber">IUC/Smartcard Number</label>
+                <input type="text" id="iucNumber" placeholder="Enter your IUC/Smartcard number" required>
+                <div class="error" id="iucError">Please enter a valid IUC/Smartcard number</div>
+            </div>
+
+            <div class="form-group">
+                <label>Select Subscription Plan</label>
+                <div class="plan-options">
+                    <div class="plan-option" data-plan="weekly" onclick="selectPlan(this)">
+                        <div>Weekly</div>
+                        <div class="price">₦500</div>
+                    </div>
+                    <div class="plan-option selected" data-plan="monthly" onclick="selectPlan(this)">
+                        <div>Monthly</div>
+                        <div class="price">₦2,000</div>
+                    </div>
+                    <div class="plan-option" data-plan="yearly" onclick="selectPlan(this)">
+                        <div>Yearly</div>
+                        <div class="price">₦20,000</div>
+                    </div>
+                </div>
+                <input type="hidden" id="selectedPlan" value="monthly">
+            </div>
+
+            <button type="button" class="btn" onclick="processSubscription()">Continue to Payment</button>
+        </form>
+    </div>
+
+    <script>
+        // Select plan option
+        function selectPlan(element) {
+            document.querySelectorAll('.plan-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            document.getElementById('selectedPlan').value = element.dataset.plan;
+        }
+
+        // Process subscription form
+        function processSubscription() {
+            const provider = document.getElementById('provider').value;
+            const iucNumber = document.getElementById('iucNumber').value.trim();
+            const plan = document.getElementById('selectedPlan').value;
+            
+            // Reset errors
+            document.getElementById('providerError').style.display = 'none';
+            document.getElementById('iucError').style.display = 'none';
+            
+            // Validate provider
+            if (!provider) {
+                document.getElementById('providerError').style.display = 'block';
+                return;
+            }
+            
+            // Validate IUC number (basic validation)
+            if (!iucNumber || iucNumber.length < 8) {
+                document.getElementById('iucError').style.display = 'block';
+                return;
+            }
+            
+            // Calculate amount based on plan
+            let amount = 0;
+            switch(plan) {
+                case 'weekly': amount = 500; break;
+                case 'monthly': amount = 2000; break;
+                case 'yearly': amount = 20000; break;
+            }
+            
+            // Store data in sessionStorage to pass to payment page
+            sessionStorage.setItem('tvProvider', provider);
+            sessionStorage.setItem('iucNumber', iucNumber);
+            sessionStorage.setItem('subscriptionPlan', plan);
+            sessionStorage.setItem('subscriptionAmount', amount);
+            
+            // Redirect to payment page
+            window.location.href = 'payment.html';
+        }
+
+        // You could add more validation for IUC number format if needed
+        // For example, DSTV numbers might have a specific format
+    </script>
+</body>
+</html>

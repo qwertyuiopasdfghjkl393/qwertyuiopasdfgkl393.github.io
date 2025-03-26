@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Plan Purchase</title>
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-hover: #45a049;
+            --dark-bg: #121212;
+            --card-bg: #1E1E1E;
+            --input-bg: #2D2D2D;
+            --text-light: #FFFFFF;
+            --text-muted: #AAAAAA;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            --highlight: rgba(76, 175, 80, 0.2);
+        }
+
+        /* Light mode variables */
+        [data-theme="light"] {
+            --dark-bg: #f5f5f5;
+            --card-bg: #ffffff;
+            --input-bg: #f0f0f0;
+            --text-light: #333333;
+            --text-muted: #666666;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 550px;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin: 20px auto;
+            transition: background-color 0.3s;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--input-bg);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: var(--text-light);
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        input[type="tel"] {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #444;
+            border-radius: var(--border-radius);
+            background: var(--input-bg);
+            color: var(--text-light);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--highlight);
+        }
+
+        .providers-container {
+            margin: 25px 0;
+        }
+
+        .providers-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .providers-title h3 {
+            font-size: 18px;
+            color: var(--text-light);
+        }
+
+        .network-providers {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .provider-card {
+            background: var(--input-bg);
+            border-radius: 12px;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .provider-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .provider-card.selected {
+            border-color: var(--primary);
+            background: var(--highlight);
+        }
+
+        .provider-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            transition: transform 0.3s;
+        }
+
+        .provider-card.selected img {
+            transform: scale(1.1);
+        }
+
+        .provider-card span {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .data-plans-container {
+            margin: 30px 0;
+        }
+
+        .data-plans-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .data-plan {
+            background: var(--input-bg);
+            border-radius: var(--border-radius);
+            padding: 25px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-align: center;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .data-plan:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .data-plan.selected {
+            border-color: var(--primary);
+            background: var(--highlight);
+        }
+
+        .data-plan-amount {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+
+        .data-plan-size {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-light);
+        }
+
+        .data-plan-duration {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .summary {
+            background: var(--input-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            opacity: 2000.9;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+            
+            .network-providers {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .provider-card img {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .data-plan {
+                padding: 20px 10px;
+            }
+            
+            .data-plan-amount {
+                font-size: 18px;
+            }
+            
+            .data-plan-size {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Buy Data Plan</h1>
+            <p>Instant data bundle for all networks</p>
+            <button class="theme-toggle" id="themeToggle">
+                <span id="themeIcon">🌙</span> <span id="themeText">Dark</span>
+            </button>
+        </div>
+
+        <div class="form-group">
+            <label for="phoneNumber">Phone Number</label>
+            <input type="tel" id="phoneNumber" placeholder="Enter phone number" required>
+        </div>
+
+        <div class="providers-container">
+            <div class="providers-title">
+                <h3>Select Network Provider</h3>
+            </div>
+            
+            <div class="network-providers">
+                <!-- Image paths should be in assets/images/providers/ -->
+                <div class="provider-card" onclick="selectProvider('Airtel', this)">
+                    <img src="assets/images/providers/airtel.png" alt="Airtel">
+                    <span>Airtel</span>
+                </div>
+                <div class="provider-card" onclick="selectProvider('MTN', this)">
+                    <img src="assets/images/providers/mtn.png" alt="MTN">
+                    <span>MTN</span>
+                </div>
+                <div class="provider-card" onclick="selectProvider('Glo', this)">
+                    <img src="assets/images/providers/glo.png" alt="Glo">
+                    <span>Glo</span>
+                </div>
+                <div class="provider-card" onclick="selectProvider('9mobile', this)">
+                    <img src="assets/images/providers/9mobile.png" alt="9mobile">
+                    <span>9mobile</span>
+                </div>
+            </div>
+            
+            <div class="data-plans-container">
+                <div class="providers-title">
+                    <h3>Select Data Plan</h3>
+                </div>
+                
+                <div class="data-plans-grid">
+                    <div class="data-plan" onclick="selectPlan('1GB', 120, '3 days', this)">
+                        <div class="data-plan-amount">₦120</div>
+                        <div class="data-plan-size">1GB</div>
+                        <div class="data-plan-duration">3 days</div>
+                    </div>
+                    
+                    <div class="data-plan" onclick="selectPlan('5GB', 300, '3 weeks', this)">
+                        <div class="data-plan-amount">₦300</div>
+                        <div class="data-plan-size">5GB</div>
+                        <div class="data-plan-duration">3 weeks</div>
+                    </div>
+                    
+                    <div class="data-plan" onclick="selectPlan('10GB', 600, '2 months', this)">
+                        <div class="data-plan-amount">₦600</div>
+                        <div class="data-plan-size">10GB</div>
+                        <div class="data-plan-duration">2 months</div>
+                    </div>
+                    
+                    <div class="data-plan" onclick="selectPlan('45GB', 1800, '6 months', this)">
+                        <div class="data-plan-amount">₦1800</div>
+                        <div class="data-plan-size">45GB</div>
+                        <div class="data-plan-duration">6 months</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="summary" id="summary">
+                <div class="summary-item">
+                    <span>Network:</span>
+                    <span id="selected-network">None</span>
+                </div>
+                <div class="summary-item">
+                    <span>Data Plan:</span>
+                    <span id="selected-plan">None</span>
+                </div>
+                <div class="summary-item">
+                    <span>Amount:</span>
+                    <span id="selected-amount">₦0</span>
+                </div>
+                <div class="summary-item">
+                    <span>Validity:</span>
+                    <span id="selected-duration">-</span>
+                </div>
+                <div class="summary-item">
+                    <span>Phone Number:</span>
+                    <span id="display-number">-</span>
+                </div>
+                <div class="summary-item">
+                    <span>Total:</span>
+                    <span id="total-amount">₦0</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" id="proceed-btn" disabled onclick="proceedToPayment()">Proceed to Payment</button>
+    </div>
+
+    <script>
+        let selectedProvider = null;
+        let selectedPlan = null;
+        const phoneInput = document.getElementById('phoneNumber');
+        const proceedBtn = document.getElementById('proceed-btn');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeIcon.textContent = '☀️';
+            themeText.textContent = 'Light';
+        }
+
+        // Update summary when phone number changes
+        phoneInput.addEventListener('input', function() {
+            updateSummary();
+            checkProceedButton();
+        });
+
+        function selectProvider(provider, element) {
+            selectedProvider = provider;
+            
+            // Update UI
+            document.querySelectorAll('.provider-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            updateSummary();
+            checkProceedButton();
+        }
+
+        function selectPlan(size, amount, duration, element) {
+            selectedPlan = {
+                size: size,
+                amount: amount,
+                duration: duration
+            };
+            
+            // Update UI
+            document.querySelectorAll('.data-plan').forEach(plan => {
+                plan.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            updateSummary();
+            checkProceedButton();
+        }
+
+        function checkProceedButton() {
+            proceedBtn.disabled = !(selectedProvider && selectedPlan && phoneInput.value.trim().length >= 11);
+        }
+
+        function updateSummary() {
+            const phone = phoneInput.value.trim();
+            
+            if (selectedProvider) {
+                document.getElementById('selected-network').textContent = selectedProvider;
+            }
+            
+            if (selectedPlan) {
+                document.getElementById('selected-plan').textContent = selectedPlan.size;
+                document.getElementById('selected-amount').textContent = `₦${selectedPlan.amount}`;
+                document.getElementById('selected-duration').textContent = selectedPlan.duration;
+                document.getElementById('total-amount').textContent = `₦${selectedPlan.amount}`;
+            }
+            
+            document.getElementById('display-number').textContent = phone || '-';
+        }
+
+        function proceedToPayment() {
+            const phone = phoneInput.value.trim();
+            
+            if (!phone || phone.length < 11) {
+                alert('Please enter a valid 11-digit phone number');
+                return;
+            }
+            
+            if (!selectedProvider) {
+                alert('Please select a network provider');
+                return;
+            }
+            
+            if (!selectedPlan) {
+                alert('Please select a data plan');
+                return;
+            }
+            
+            // Prepare transaction data
+            const transactionData = {
+                type: 'data',
+                phone: phone,
+                network: selectedProvider,
+                plan: selectedPlan.size,
+                amount: selectedPlan.amount,
+                duration: selectedPlan.duration,
+                date: new Date().toISOString()
+            };
+            
+            // Store in session storage
+            sessionStorage.setItem('dataTransaction', JSON.stringify(transactionData));
+            
+            // Redirect to payment page
+            window.location.href = 'payment.html';
+        }
+    </script>
+
+</body>
+</html>
